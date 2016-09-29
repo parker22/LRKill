@@ -4,10 +4,14 @@ document.ontouchmove = function (event) {
 $(document).ready(function () {
   var socket = io();
 
+  $("#second_view").hide();
+  $("#enter_room").hide();
 
 
   $("#second_view").hide()
   $("#enter_game").click(function () {
+  //创建用户，隐藏第登陆界面，显示设置游戏配置界面
+  $( "#enter_game" ).click(function() {
     var name = $("#player_name_input").val();
 
 
@@ -23,11 +27,29 @@ $(document).ready(function () {
     //   $("#msg").focus();
     // }
     $("#first_view").hide();
+  $( "#first_view" ).hide();
+  $("#second_view").show();
+});
 
     $("#second_view").show()
   });
   var player_info = {
     "p_name": null
+//创建房间
+$( "#crate_room" ).click(function() {
+  $("#second_view").hide();
+  $("#enter_room").show();
+});
+
+//创建游戏,需要人满开始button才能够被点击
+  // if(){
+  //
+  // }
+  // $( "#start_game" ).click(function() {
+  //
+  // });
+  var player_info ={
+    "p_name":""
   };
   socket.on("update-user-status", function (status) {
     console.log(status);
@@ -72,6 +94,29 @@ $(document).ready(function () {
       }
     ]
   };
+
+
+
+  var allPlayerInfo = {
+    "position" = [
+      {
+        "num":1;
+
+      }
+
+    ]
+
+
+
+
+
+
+
+
+
+
+
+  }
   var man_kill = new Vue({
     el: '#panda_kill',
     data: info_kill,

@@ -75,14 +75,83 @@
       </div>
       <div class="row affirm_button">
         <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
-          <a class="btn btn-default" role="button">创建房间</a>
+          <a id = "crate_room" class="btn btn-default" role="button">创建房间</a>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
           <a class="btn btn-default" role="button">加入游戏</a>
         </div>
       </div>
     </div>
-
+    <div id = "enter_room" class = "row room_place">
+      <div class = "player_status">
+        <table class="table table-hover">
+          <tr class = "info">
+            <td>用户号码</td>
+            <td>用户名</td>
+            <td>用户状态</td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td>{{}}</td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td>{{}}</td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td>{{}}</td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td>{{}}</td>
+          </tr>
+        </table>
+        <!-- <ul>
+          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
+          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
+          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
+          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
+          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
+        </ul> -->
+        <a id = "start_game" class="btn btn-default start_button" role="button">开始游戏</a>
+      </div>
+    </div>
+    <div id = "guard" class = "row">
+      <div class = "player_status">
+        <table class="table table-hover">
+          <tr class = "info">
+            <td>用户号码</td>
+            <td>用户名</td>
+            <td>守护玩家</td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
+          </tr>
+          <tr>
+            <td>{{player_index}}</td>
+            <td>{{player_n}}</td>
+            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
+          </tr>
+        </table>
+        <a id = "start_game" class="btn btn-default start_button" role="button">开始游戏</a>
+    </div>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
