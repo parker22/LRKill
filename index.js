@@ -33,37 +33,48 @@ app.get('/', function (req, res) {
 
 
 io.sockets.on("connection", function (socket) {
-  console.log(socket.handshake.session.username);
-  socket.on("joinserver", function (name, device) {
-    socket.handshake.session.username = name;
-    var exists = false;
+  var uid = socket.handshake.session.userid;
+  console.log("uuid:" +uid +" connected");
+
+  if (uid != null) {
+    socket.emit("update-user-status", people[uid]);
+    
+  } else {
+    uid = uuid.v4();
+    
+    people[uid] = { "name": null, "owns": null, "inroom": null };
+  }
+
+  socket.on("joinserver", function (name) {
+socket.handshake.session.userid = uid;    var exists = false;
     var ownerRoomID = inRoomID = null;
     console.log("user " + name + "joined");
-    _.find(people, function (key, value) {
-      if (key.name.toLowerCase() === name.toLowerCase())
-        return exists = true;
-    });
-    if (exists) {//provide unique username:
-      var randomNumber = Math.floor(Math.random() * 1001)
-      do {
-        proposedName = name + randomNumber;
-        _.find(people, function (key, value) {
-          if (key.name.toLowerCase() === proposedName.toLowerCase())
-            return exists = true;
-        });
-      } while (!exists);
-      socket.emit("exists", { msg: "The username already exists, please pick another one.", proposedName: proposedName });
-    } else {
-      people[socket.id] = { "name": name, "owns": ownerRoomID, "inroom": inRoomID, "device": device };
-      socket.emit("update", "You have connected to the server.");
-      io.sockets.emit("update", people[socket.id].name + " is online.")
-      sizePeople = _.size(people);
-      sizeRooms = _.size(rooms);
-      io.sockets.emit("update-people", { people: people, count: sizePeople });
-      socket.emit("roomList", { rooms: rooms, count: sizeRooms });
-      socket.emit("joined"); //extra emit for GeoLocation
-      sockets.push(socket);
-    }
+    people[uid].name= name;
+    // _.find(people, function (key, value) {
+    //   if (key.name.toLowerCase() === name.toLowerCase())
+    //     return exists = true;
+    // });
+    // if (exists) {//provide unique username:
+    //   var randomNumber = Math.floor(Math.random() * 1001)
+    //   do {
+    //     proposedName = name + randomNumber;
+    //     _.find(people, function (key, value) {
+    //       if (key.name.toLowerCase() === proposedName.toLowerCase())
+    //         return exists = true;
+    //     });
+    //   } while (!exists);
+    //   socket.emit("exists", { msg: "The username already exists, please pick another one.", proposedName: proposedName });
+    // } else {
+    //   people[socket.id] = { "name": name, "owns": ownerRoomID, "inroom": inRoomID, "device": device };
+    //   socket.emit("update", "You have connected to the server.");
+    //   io.sockets.emit("update", people[socket.id].name + " is online.")
+    //   sizePeople = _.size(people);
+    //   sizeRooms = _.size(rooms);
+    //   io.sockets.emit("update-people", { people: people, count: sizePeople });
+    //   socket.emit("roomList", { rooms: rooms, count: sizeRooms });
+    //   socket.emit("joined"); //extra emit for GeoLocation
+    //   sockets.push(socket);
+    // }
   });
 
   socket.on("getOnlinePeople", function (fn) {
