@@ -4,9 +4,10 @@ document.ontouchmove = function(event){
 $(document).ready(function () {
    var socket = io();
 
+  $("#second_view").hide();
+  $("#enter_room").hide();
 
-
-  $("#second_view").hide()
+  //创建用户，隐藏第登陆界面，显示设置游戏配置界面
   $( "#enter_game" ).click(function() {
     var name = $("#player_name_input").val();
     var device = "desktop";
@@ -25,12 +26,22 @@ $(document).ready(function () {
     //   $("#msg").focus();
     // }
   $( "#first_view" ).hide();
-
-  $("#second_view").show()
+  $("#second_view").show();
 });
 
+//创建房间
+$( "#crate_room" ).click(function() {
+  $("#second_view").hide();
+  $("#enter_room").show();
+});
 
-
+//创建游戏,需要人满开始button才能够被点击
+  // if(){
+  //
+  // }
+  // $( "#start_game" ).click(function() {
+  //
+  // });
   var player_info ={
     "p_name":""
   };
@@ -64,6 +75,29 @@ $(document).ready(function () {
       }
     ]
   };
+
+
+
+  var allPlayerInfo = {
+    "position" = [
+      {
+        "num":1;
+        
+      }
+
+    ]
+
+
+
+
+
+
+
+
+
+
+
+  }
   var man_kill = new Vue({
     el: '#panda_kill',
     data: info_kill,
@@ -101,27 +135,4 @@ $(document).ready(function () {
       message:player_info
     }
   });
-
-  const User = {
-  template: `
-    <div class="user">
-      <h2>User {{ $route.params.id }}</h2>
-      <router-view></router-view>
-    </div>
-  `
-  };
-  const UserHome = { template: '<div>Home</div>' }
-  const router = new VueRouter({
-  routes: [
-    { path: '/user/:id', component: User,
-      children: [
-        // UserHome will be rendered inside User's <router-view>
-        // when /user/:id is matched
-        { path: '', component: UserHome },
-
-      ]
-    }
-  ]
-});
-const app = new Vue({ router }).$mount('#app');
 });
