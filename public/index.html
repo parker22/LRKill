@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
+
+  <title>狼人杀app</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+  <!-- Optional theme -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <script src="js/lodash.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.27/vue.min.js"></script>
+  <script src="js/killcontrol.js"></script>
+
+</head>
+
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="title">
+        <h1 class="title_name"><a href="index.html">狼人杀</a></h1>
+      </div>
+    </div>
+    <div id="first_view">
+      <div id="player_n" class="row player_input">
+        <input id="player_name_input" type="text" v-model="message.p_name" placeholder="输入你的昵称">
+        <br>
+        <a id="enter_game" class="btn btn-default enter_button" role="button">进入游戏</a>
+      </div>
+    </div>
+
+    <div id="second_view">
+      <p>昵称：<span>{{message.p_name}}</span></p>
+      <div id="panda_kill">
+        <div class="row identity_select">
+          <div v-for="char in characters" class="col-xs-4 col-sm-6 col-md-4">
+            <div class="thumbnail">
+              <img class="iden_pic" src="images/{{char.c_name}}.jpg" style="display: block;">
+              <div class="caption">
+                <div class="row select_number">
+                  <div class="col-xs-4 col-sm-6 col-md-4 status_identity minus">
+                    <a v-on:click="minus($index)" class="btn btn-primary " role="button"></a>
+                  </div>
+                  <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
+                    <p><span>{{char.c_num}}</span>人</p>
+                  </div>
+                  <div class="col-xs-4 col-sm-6 col-md-4 status_identity add">
+                    <a v-on:click="add($index)" class="btn btn-default " role="button"></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row display_number">
+          <p>游戏总人数：<span>{{totalNum}}</span></p>
+        </div>
+      </div>
+      <div class="row affirm_button">
+        <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
+          <a class="btn btn-default" role="button">创建房间</a>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
+          <a class="btn btn-default" role="button">加入游戏</a>
+        </div>
+      </div>
+      <input type="file" accept="image/*;capture=camera">
+
+    </div>
+
+  </div>
+  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+</body>
+
+</html>
