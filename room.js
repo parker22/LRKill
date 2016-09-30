@@ -3,9 +3,10 @@ function Room(name, id, owner) {
   this.id = id;
   this.owner = owner;
   this.people = [];
-  this.peopleLimit = 4;
+  this.peopleLimit = 8;
   this.status = "available";
   this.private = false;
+  this.characters = {};
 };
 
 Room.prototype.addPerson = function(personID) {
@@ -13,6 +14,13 @@ Room.prototype.addPerson = function(personID) {
     this.people.push(personID);
   }
 };
+
+Room.prototype.setCharacters = function(chars) {
+  if (this.status === "available") {
+    this.characters = chars;
+  }
+};
+
 
 Room.prototype.removePerson = function(person) {
   var personIndex = -1;

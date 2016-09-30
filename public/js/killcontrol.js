@@ -7,9 +7,6 @@ $(document).ready(function () {
   $("#second_view").hide();
   $("#enter_room").hide();
 
-
-  $("#second_view").hide()
-  $("#enter_game").click(function () {
   //创建用户，隐藏第登陆界面，显示设置游戏配置界面
   $( "#enter_game" ).click(function() {
     var name = $("#player_name_input").val();
@@ -27,16 +24,23 @@ $(document).ready(function () {
     //   $("#msg").focus();
     // }
     $("#first_view").hide();
-  $( "#first_view" ).hide();
   $("#second_view").show();
 });
 
-    $("#second_view").show()
-  });
   var player_info = {
-    "p_name": null
+    "p_name": null};
 //创建房间
-$( "#crate_room" ).click(function() {
+$( "#create_room" ).click(function() {
+  var characters=[];
+  _.forEach(info_kill.characters, function(value) {
+    for (i = 0; i < value.c_num; i++) {
+      characters.push(value.c_name);
+
+    }
+  });
+  console.log(characters);
+
+  socket.emit("createRoom", characters);
   $("#second_view").hide();
   $("#enter_room").show();
 });
@@ -48,9 +52,7 @@ $( "#crate_room" ).click(function() {
   // $( "#start_game" ).click(function() {
   //
   // });
-  var player_info ={
-    "p_name":""
-  };
+
   socket.on("update-user-status", function (status) {
     console.log(status);
     if (status.name != null) {
@@ -59,13 +61,25 @@ $( "#crate_room" ).click(function() {
     $("#second_view").show();
     toastr.info('欢迎回到游戏'+status.name)
     }
-  })
+  });
+  var roomInfo = {};
+  socket.on("update", function (room) {
 
+    if (_.isEmpty(roomInfo)){
+      roomInfo = room;
 
+      var player_status = new Vue({
+        el: '#player_status',
+        data: roomInfo
+      })
+      console.log(player_status.characters);
+    }
+
+  });
 
 
   var info_kill = {
-    "position_nums": 8,
+
     "characters": [
       {
         "c_name": "wolf",
@@ -95,28 +109,6 @@ $( "#crate_room" ).click(function() {
     ]
   };
 
-
-
-  var allPlayerInfo = {
-    "position" = [
-      {
-        "num":1;
-
-      }
-
-    ]
-
-
-
-
-
-
-
-
-
-
-
-  }
   var man_kill = new Vue({
     el: '#panda_kill',
     data: info_kill,
@@ -154,28 +146,4 @@ $( "#crate_room" ).click(function() {
       message: player_info
     }
   });
-
-  const User = {
-    template: `
-    <div class="user">
-      <h2>User {{ $route.params.id }}</h2>
-      <router-view></router-view>
-    </div>
-  `
-  };
-  const UserHome = { template: '<div>Home</div>' }
-  const router = new VueRouter({
-    routes: [
-      {
-        path: '/user/:id', component: User,
-        children: [
-          // UserHome will be rendered inside User's <router-view>
-          // when /user/:id is matched
-          { path: '', component: UserHome },
-
-        ]
-      }
-    ]
-  });
-  const app = new Vue({ router }).$mount('#app');
 });

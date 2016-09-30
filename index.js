@@ -25,7 +25,7 @@ io.use(sharedsession(session, {
 var people = {};
 var rooms = {};
 var sockets = [];
-
+var roomID = 0;
 
 app.get('/', function (req, res) {
   res.sendFile('index.html', { root: 'public' });
@@ -143,24 +143,33 @@ socket.handshake.session.userid = uid;    var exists = false;
   // });
 
   //Room functions
-  socket.on("createRoom", function (name) {
-    if (people[socket.id].inroom) {
+  socket.on("createRoom", function (characters) {
+    characters = _.shuffle(characters);
+    if (people[uid].inroom!=null) {
       socket.emit("update", "You are in a room. Please leave it first to create your own.");
-    } else if (!people[socket.id].owns) {
-      var id = uuid.v4();
-      var room = new Room(name, id, socket.id);
+    } else if (!people[uid].owns) {
+      var id = roomID+1;
+      roomID = id;
+      var room = new Room("room"+id, id, uid);
       rooms[id] = room;
       sizeRooms = _.size(rooms);
       io.sockets.emit("roomList", { rooms: rooms, count: sizeRooms });
       //add room to socket, and auto join the creator of the room
-      socket.room = name;
+      socket.room = room.name;
       socket.join(socket.room);
-      people[socket.id].owns = id;
-      people[socket.id].inroom = id;
+      people[uid].owns = id;
+      people[uid].inroom = id;
       room.addPerson(socket.id);
-      socket.emit("update", "Welcome to " + room.name + ".");
+      var chars={};
+
+      for (i = 0; i < characters.length; i++) {
+        chars[i+1]= {"c_name":characters[i],"c_status":"awaiting","c_uid":null};
+      }
+      room.setCharacters(chars);
+
+      io.to(socket.room).emit("update", room);
       socket.emit("sendRoomID", { id: id });
-      chatHistory[socket.room] = [];
+      // chatHistory[socket.room] = [];
     } else {
       socket.emit("update", "You have already created a room.");
     }
