@@ -2,144 +2,252 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="icon" href="../../favicon.ico">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
 
-  <title>狼人杀app</title>
-  <!-- Latest compiled and minified CSS -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-    crossorigin="anonymous">
-  <link href="css/style.css" rel="stylesheet" type="text/css" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
-  <!-- Optional theme -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-  <!-- Latest compiled and minified JavaScript -->
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-    crossorigin="anonymous"></script>
-  <script src="js/lodash.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.27/vue.min.js"></script>
-  <script src="js/killcontrol.js"></script>
-  
-
-
+    <title>狼人杀app</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <!-- Optional theme -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="js/lodash.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.27/vue.min.js"></script>
+    <script src="js/killcontrol.js"></script>
 
 </head>
 
 <body>
-  <div class="container-fluid">
+<div class="container-fluid">
     <div class="row">
-      <div class="title">
-        <h1 class="title_name"><a href="index.html">狼人杀</a></h1>
-      </div>
+        <div class="title">
+            <h1 class="title_name"><a href="index.html">狼人杀</a></h1>
+        </div>
     </div>
     <div id="first_view">
-      <div id="player_n" class="row player_input">
-        <input id="player_name_input" type="text" v-model="message.p_name" placeholder="输入你的昵称">
-        <br>
-        <a id="enter_game" class="btn btn-default enter_button" role="button">进入游戏</a>
-      </div>
+        <div id="player_n" class="row player_input">
+            <input id="player_name_input" type="text" v-model="message.p_name" placeholder="输入你的昵称">
+            <br>
+            <a id="enter_game" class="btn btn-default enter_button" role="button">进入游戏</a>
+        </div>
     </div>
 
     <div id="second_view">
-      <p>昵称：<span>{{message.p_name}}</span></p>
-      <div id="panda_kill">
-        <div class="row identity_select">
-          <div v-for="char in characters" class="col-xs-4 col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <img class="iden_pic" src="images/{{char.c_name}}.jpg" style="display: block;">
-              <div class="caption">
-                <div class="row select_number">
-                  <div class="col-xs-4 col-sm-6 col-md-4 status_identity minus">
-                    <a v-on:click="minus($index)" class="btn btn-primary " role="button"></a>
-                  </div>
-                  <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
-                    <p><span>{{char.c_num}}</span>人</p>
-                  </div>
-                  <div class="col-xs-4 col-sm-6 col-md-4 status_identity add">
-                    <a v-on:click="add($index)" class="btn btn-default " role="button"></a>
-                  </div>
+        <p>昵称：<span>{{message.p_name}}</span></p>
+        <div id="panda_kill">
+            <div class="row identity_select">
+                <div v-for="char in characters" class="col-xs-4 col-sm-6 col-md-4">
+                    <div class="thumbnail">
+                        <img class="iden_pic" src="images/{{char.c_name}}.jpg" style="display: block;">
+                        <div class="caption">
+                            <div class="row select_number">
+                                <div class="col-xs-4 col-sm-6 col-md-4 status_identity minus">
+                                    <a v-on:click="minus($index)" class="btn btn-primary " role="button"></a>
+                                </div>
+                                <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
+                                    <p><span>{{char.c_num}}</span>人</p>
+                                </div>
+                                <div class="col-xs-4 col-sm-6 col-md-4 status_identity add">
+                                    <a v-on:click="add($index)" class="btn btn-default " role="button"></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
 
-        <div class="row display_number">
-          <p>游戏总人数：<span>{{totalNum}}</span></p>
+            <div class="row display_number">
+                <p>游戏总人数：<span>{{totalNum}}</span></p>
+            </div>
         </div>
-      </div>
-      <div class="row affirm_button">
-        <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
-          <a id = "create_room" class="btn btn-default" role="button">创建房间</a>
+        <div class="row affirm_button">
+            <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
+                <a id="create_room" class="btn btn-default" role="button">创建房间</a></div>
+            <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
+                <a class="btn btn-default" role="button">加入游戏</a>
+            </div>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
-          <a class="btn btn-default" role="button">加入游戏</a>
+    </div>
+    <div id="enter_room" class="row room_place">
+        <div id="player_status" class="player_status">
+            <table class="table table-hover">
+                <tr class="info">
+                    <td>用户号码</td>
+                    <td>用户名</td>
+                    <td>用户状态</td>
+                </tr>
+                <tr v-for="char in characters">
+                    <td>{{ $key }}</td>
+                    <td>{{ char.c_status }}</td>
+                    <td>
+                        <button type="button" class="btn btn-default">Sit</button>
+                    </td>
+                </tr>
+            </table>
+
+            <a id="start_game" class="btn btn-default start_button" role="button">开始游戏</a>
         </div>
-      </div>
     </div>
-    <div id = "enter_room" class = "row room_place">
-      <div id="player_status" class = "player_status">
-        <table class="table table-hover">
-          <tr class = "info">
-            <td>用户号码</td>
-            <td>用户名</td>
-            <td>用户状态</td>
-          </tr>
-            <tr v-for="char in characters">
-                <td>{{ $key }}</td>
-                <td>{{ char.c_status }}</td>
-                <td><button type="button" class="btn btn-default">Sit</button></td>
-            </tr>
-        </table>
-        <!-- <ul>
-          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
-          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
-          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
-          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
-          <li class = "player_l">第<span>{{player_index}}</span>个玩家进入</li>
-        </ul> -->
-        <a id = "start_game" class="btn btn-default start_button" role="button">开始游戏</a>
-      </div>
+    <!-- 整体流程部分，先从确认身份，黑夜，守卫，狼人，女巫，预言家 -->
+    <div id="panda_process">
+        <!-- 确认身份 -->
+        <div id="identify" class="identify_scene">
+            <div class="row">
+                <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
+                </div>
+                <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
+                    <div class="thumbnail">
+                        <img class="iden_pic" src="images/thumb1.jpg" style="display: block;">
+                        <div class="caption">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
+                </div>
+            </div>
+            <div class="row status_identity">
+                <a id="identify_button" class="btn btn-default" role="button">确认身份</a>
+            </div>
+        </div>
+        <!-- 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 -->
+        <div id="night">
+            <img class="back_img" src="images/background.jpg"/>
+        </div>
+        <!-- 守卫操作 -->
+        <div id="guard" class="row identity_select">
+            <div class="row">
+                <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
+                    <div id="pos_id" class="thumbnail">
+                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <div class="caption">
+                            <div class="row select_number">
+                                <div class="status_identity">
+                                    <p><span>{{pos.num}}</span>号玩家：<span>{{pos.player_n}}</span></p>
+                                    <br>
+                                    <a id="guardbutton{{pos.num}}" v-on:click="guard($index)"
+                                       class="btn btn-default guard_button" role="button">守卫</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row process_button">
+                <div class="col-xs-6 col-sm-6 col-md-6 status_identity ">
+                    <a v-on:click="guard_restart" class="btn btn-default" role="button">重置</a>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 status_identity ">
+                    <a id="guard_confirm" class="btn btn-default" role="button">确定</a>
+                </div>
+            </div>
+        </div>
+        <!-- 守卫操作完，等5秒钟的时间，播放声音，狼人请睁眼 -->
+        <div id="wolves" class="row identity_select">
+            <p>狼人请统一意见后，共同按一个号码，若均确认后，击杀目标不同则被认为是平安夜</p>
+            <div class="row">
+                <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
+                    <div id="pos_id" class="thumbnail">
+                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <div class="caption">
+                            <div class="row select_number">
+                                <div class="status_identity">
+                                    <p><span>{{pos.num}}</span>号玩家：<span>{{pos.player_n}}</span></p>
+                                    <br>
+                                    <a id="wolvesbutton{{pos.num}}" v-on:click="wolves($index)"
+                                       class="btn btn-default wolves_button" role="button">杀害</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row process_button">
+                <div class="col-xs-6 col-sm-6 col-md-6 status_identity ">
+                    <a v-on:click="wolves_restart" class="btn btn-default" role="button">重置</a>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 status_identity ">
+                    <a id="wolves_confirm" class="btn btn-default" role="button">确定</a>
+                </div>
+            </div>
+        </div>
+        <!-- 狼人操作完，等5秒钟的时间，播放声音，预言家请睁眼 -->
+        <div id="predictor" class="row identity_select">
+            <div class="row">
+                <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
+                    <div id="pos_id" class="thumbnail">
+                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <div class="caption">
+                            <div class="row select_number">
+                                <div class="status_identity">
+                                    <p><span>{{pos.num}}</span>号玩家 ：<span>{{pos.player_n}}</span></p>
+                                    <br>
+                                    <a id="predictorbutton{{pos.num}}" v-on:click="predictor($index)"
+                                       class="btn btn-default predictor_button" role="button">查验</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row process_button">
+                <div class="status_identity ">
+                    <a id="predictor_confirm" class="btn btn-default" role="button">确定</a>
+                </div>
+            </div>
+        </div>
+        <!-- 预言家操作完，等5秒钟的时间，播放声音，女巫请睁眼 -->
+        <div id="witch" class="row identity_select">
+            <p>Tips: 女巫一晚上最多只可以用一瓶药（解药／毒药），用完解药后无法看到死的人</p>
+            <div class="row">
+                <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
+                    <div id="pos_id" class="thumbnail">
+                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <div class="caption">
+                            <div class="row select_number">
+                                <div class="status_identity">
+                                    <p><span>{{pos.num}}</span>号玩家：<span>{{pos.player_n}}</span></p>
+                                    <br>
+                                    <a id="witchbutton{{pos.num}}" v-on:click="witch($index)"
+                                       class="btn btn-default witch_button" role="button">毒杀</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row identify_scene">
+                <p>今夜死的玩家是 : <span>{{today_killed_indx}}</span>号玩家</p>
+                <a v-on:click="witch_save" class="btn btn-default witch_button" role="button">救人</a>
+            </div>
+            <div class="row process_button">
+                <div class="col-xs-6 col-sm-6 col-md-6 status_identity ">
+                    <a v-on:click="witch_restart" class="btn btn-default" role="button">重置</a>
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6 status_identity ">
+                    <a id="witch_confirm" class="btn btn-default" role="button">确定</a>
+                </div>
+            </div>
+        </div>
+        <!-- 女巫操作完，等5秒钟的时间，播放声音，天亮了，请大家睁眼 -->
+
     </div>
-    <div id = "guard" class = "row">
-      <div class = "player_status">
-        <table class="table table-hover">
-          <tr class = "info">
-            <td>用户号码</td>
-            <td>用户名</td>
-            <td>守护玩家</td>
-          </tr>
-          <tr>
-            <td>{{player_index}}</td>
-            <td>{{player_n}}</td>
-            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
-          </tr>
-          <tr>
-            <td>{{player_index}}</td>
-            <td>{{player_n}}</td>
-            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
-          </tr>
-          <tr>
-            <td>{{player_index}}</td>
-            <td>{{player_n}}</td>
-            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
-          </tr>
-          <tr>
-            <td>{{player_index}}</td>
-            <td>{{player_n}}</td>
-            <td><a id = "guard_sb" class="btn btn-default start_button" role="button">守护</a></td>
-          </tr>
-        </table>
-        <a id = "start_game" class="btn btn-default start_button" role="button">开始游戏</a>
-    </div>
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-  <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 </body>
 
 </html>
