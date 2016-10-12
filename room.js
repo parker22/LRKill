@@ -6,6 +6,9 @@ function Room(name, id, owner) {
   this.peopleLimit = 8;
   this.status = "available";
   this.private = false;
+  this.dayNo = 0;
+  this.isNight = false;
+  this.step = null;
   this.characters = {};
 };
 

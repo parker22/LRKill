@@ -24,7 +24,7 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
     <script src="js/lodash.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/vue/1.0.27/vue.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/vue/2.0.2/vue.js"></script>
     <script src="js/killcontrol.js"></script>
 
 </head>
@@ -38,29 +38,29 @@
     </div>
     <div id="first_view">
         <div id="player_n" class="row player_input">
-            <input id="player_name_input" type="text" v-model="message.p_name" placeholder="输入你的昵称">
+            <input id="player_name_input" type="text" placeholder="输入你的昵称">
             <br>
-            <a id="enter_game" class="btn btn-default enter_button" role="button">进入游戏</a>
+            <a id="enter_game" v-on:click="enterGame" class="btn btn-default enter_button" role="button">进入游戏</a>
         </div>
     </div>
+    <div id="user-info-panel"><p>昵称：<span>{{name}}</span></p></div>
+    <div id="game-plaza-view">
 
-    <div id="second_view">
-        <p>昵称：<span>{{message.p_name}}</span></p>
         <div id="panda_kill">
             <div class="row identity_select">
-                <div v-for="char in characters" class="col-xs-4 col-sm-6 col-md-4">
+                <div v-for="(char,index) in characters" class="col-xs-4 col-sm-6 col-md-4">
                     <div class="thumbnail">
-                        <img class="iden_pic" src="images/{{char.c_name}}.jpg" style="display: block;">
+                        <img class="iden_pic" :src="'images/'+char.c_name+'.jpg'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
                                 <div class="col-xs-4 col-sm-6 col-md-4 status_identity minus">
-                                    <a v-on:click="minus($index)" class="btn btn-primary " role="button"></a>
+                                    <a v-on:click="minus(index)" class="btn btn-primary " role="button"></a>
                                 </div>
                                 <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
                                     <p><span>{{char.c_num}}</span>人</p>
                                 </div>
                                 <div class="col-xs-4 col-sm-6 col-md-4 status_identity add">
-                                    <a v-on:click="add($index)" class="btn btn-default " role="button"></a>
+                                    <a v-on:click="add(index)" class="btn btn-default " role="button"></a>
                                 </div>
                             </div>
                         </div>
@@ -76,23 +76,33 @@
             <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
                 <a id="create_room" class="btn btn-default" role="button">创建房间</a></div>
             <div class="col-xs-6 col-sm-6 col-md-6 status_identity">
-                <a class="btn btn-default" role="button">加入游戏</a>
+                <a id="join-game" class="btn btn-default" role="button">加入游戏</a>
             </div>
         </div>
     </div>
+    <div id="join-game-screen" style="display: none">
+        <p>Please enter the room number below and click 'Join'</p>
+        <form class="form-inline" id="joinGameForm">
+            <div class="form-group">
+                <input type="text" class="form-control input-lg" placeholder="Room number" id="room-num" >
+            </div>
+            <input type="submit" name="join" id="join" value="Join" class="btn btn-primary btn-lg">
+        </form>
+    </div>
     <div id="enter_room" class="row room_place">
         <div id="player_status" class="player_status">
-            <table class="table table-hover">
+            <p>当前房间：<span>{{id}}号房间</span></p>
+            <table class="table table-condensed">
                 <tr class="info">
                     <td>用户号码</td>
                     <td>用户名</td>
                     <td>用户状态</td>
                 </tr>
-                <tr v-for="char in characters">
-                    <td>{{ $key }}</td>
+                <tr v-for="(char,key) in characters">
+                    <td>{{ key }}</td>
                     <td>{{ char.c_status }}</td>
                     <td>
-                        <button type="button" class="btn btn-default">Sit</button>
+                        <button v-on:click="sit( key )">Sit</button>
                     </td>
                 </tr>
             </table>
@@ -130,13 +140,13 @@
             <div class="row">
                 <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
                     <div id="pos_id" class="thumbnail">
-                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <img class="iden_pic" :src="'images/'+pos.player_n+'.jpg'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
                                 <div class="status_identity">
                                     <p><span>{{pos.num}}</span>号玩家：<span>{{pos.player_n}}</span></p>
                                     <br>
-                                    <a id="guardbutton{{pos.num}}" v-on:click="guard($index)"
+                                    <a :id="'guardbutton'+pos.num" v-on:click="guard($index)"
                                        class="btn btn-default guard_button" role="button">守卫</a>
                                 </div>
                             </div>
@@ -159,13 +169,13 @@
             <div class="row">
                 <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
                     <div id="pos_id" class="thumbnail">
-                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <img class="iden_pic" :src="'images/'+pos.player_n+'.jpg'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
                                 <div class="status_identity">
                                     <p><span>{{pos.num}}</span>号玩家：<span>{{pos.player_n}}</span></p>
                                     <br>
-                                    <a id="wolvesbutton{{pos.num}}" v-on:click="wolves($index)"
+                                    <a :id="'wolvesbutton'+pos.num" v-on:click="wolves($index)"
                                        class="btn btn-default wolves_button" role="button">杀害</a>
                                 </div>
                             </div>
@@ -187,13 +197,13 @@
             <div class="row">
                 <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
                     <div id="pos_id" class="thumbnail">
-                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <img class="iden_pic" :src="'images/'+pos.player_n+'.jpg'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
                                 <div class="status_identity">
                                     <p><span>{{pos.num}}</span>号玩家 ：<span>{{pos.player_n}}</span></p>
                                     <br>
-                                    <a id="predictorbutton{{pos.num}}" v-on:click="predictor($index)"
+                                    <a :id="'predictorbutton'+pos.num" v-on:click="predictor($index)"
                                        class="btn btn-default predictor_button" role="button">查验</a>
                                 </div>
                             </div>
@@ -213,13 +223,13 @@
             <div class="row">
                 <div v-for="pos in position" class="col-xs-4 col-sm-6 col-md-4">
                     <div id="pos_id" class="thumbnail">
-                        <img class="iden_pic" src="images/{{pos.player_n}}.jpg" style="display: block;">
+                        <img class="iden_pic" :src="'images/'+pos.player_n+'.jpg'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
                                 <div class="status_identity">
                                     <p><span>{{pos.num}}</span>号玩家：<span>{{pos.player_n}}</span></p>
                                     <br>
-                                    <a id="witchbutton{{pos.num}}" v-on:click="witch($index)"
+                                    <a :id="'witchbutton'+pos.num" v-on:click="witch($index)"
                                        class="btn btn-default witch_button" role="button">毒杀</a>
                                 </div>
                             </div>
