@@ -38,17 +38,18 @@
     </div>
     <div id="first_view">
       <div id="player_n" class="row player_input">
-        <input id="player_name_input" type="text" v-model="message.p_name" placeholder="输入你的昵称">
+        <input id="player_name_input" type="text" placeholder="输入你的昵称">
         <br>
-        <a id="enter_game" class="btn btn-default enter_button" role="button">进入游戏</a>
+        <a id="enter_game"  v-on:click="enterGame" class="btn btn-default enter_button" role="button">进入游戏</a>
       </div>
     </div>
-
-        <div id="panda_kill">
+      <div id="user-info-panel"><p>昵称：<span>{{name}}</span></p></div>
+      <div id="game-plaza-view">
+        <div id="panda_kill" tyle="display: none;">
             <div class="row identity_select">
                 <div v-for="(char,index) in characters" class="col-xs-4 col-sm-6 col-md-4">
                     <div class="thumbnail">
-                        <img class="iden_pic" :src="'images/'+char.c_name+'.jpg'" style="display: block;">
+                        <img class="iden_pic" :src="'images/'+char.c_name+'.png'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
                                 <div class="col-xs-4 col-sm-6 col-md-4 status_identity minus">
