@@ -22,26 +22,36 @@ $(document).ready(function () {
         "characters": [
             {
                 "c_name": "wolf",
-                "c_num": 2,
+                "c_num": 3,
                 "limit_num": false
             },
             {
                 "c_name": "villager",
-                "c_num": 0,
+                "c_num": 3,
                 "limit_num": false
             },
             {
-                "c_name": "predictor",
-                "c_num": 0,
+                "c_name": "seer",
+                "c_num": 1,
                 "limit_num": true
             },
             {
                 "c_name": "witch",
-                "c_num": 0,
+                "c_num": 1,
                 "limit_num": true
             },
             {
                 "c_name": "huntsman",
+                "c_num": 1,
+                "limit_num": true
+            },
+            {
+                "c_name": "Idiot",
+                "c_num": 0,
+                "limit_num": true
+            },
+            {
+                "c_name": "guard",
                 "c_num": 0,
                 "limit_num": true
             }
