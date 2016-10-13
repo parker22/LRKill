@@ -52,9 +52,15 @@
                         <img class="iden_pic" :src="'images/'+char.c_name+'.png'" style="display: block;">
                         <div class="caption">
                             <div class="row select_number">
-                                    <a v-on:click="minus(index)" class="btn down" role="button"></a>
-                                    <span>{{char.c_num}}</span>
-                                    <a v-on:click="add(index)" class="btn up" role="button"></a>
+                                <div class="col-xs-4 col-sm-6 col-md-4 status_identity minus">
+                                    <a v-on:click="minus(index)" class="btn btn-primary " role="button"></a>
+                                </div>
+                                <div class="col-xs-4 col-sm-6 col-md-4 status_identity">
+                                    <p><span>{{char.c_num}}</span>人</p>
+                                </div>
+                                <div class="col-xs-4 col-sm-6 col-md-4 status_identity add">
+                                    <a v-on:click="add(index)" class="btn btn-default " role="button"></a>
+                                </div>
                             </div>
                         </div>
                     </div>

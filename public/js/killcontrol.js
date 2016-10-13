@@ -31,7 +31,7 @@ $(document).ready(function () {
                 "limit_num": false
             },
             {
-                "c_name": "seer",
+                "c_name": "predictor",
                 "c_num": 1,
                 "limit_num": true
             },
