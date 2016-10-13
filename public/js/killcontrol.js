@@ -46,7 +46,7 @@ $(document).ready(function () {
                 "limit_num": true
             },
             {
-                "c_name": "Idiot",
+                "c_name": "idiot",
                 "c_num": 0,
                 "limit_num": true
             },
