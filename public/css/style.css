@@ -23,8 +23,10 @@ body{
 }
 .identity_select{
 	margin-top: 2%;
+	text-align: center;
 
 }
+
 .status_identity{
 	text-align: center;
 }
@@ -57,4 +59,41 @@ body{
 	margin-left: 10%;
 	margin-right: 10%;
 	margin-top: 4%;
+}
+.process_button{
+	text-align: center;
+	margin-top: 5%;
+	margin-bottom: 5%;
+}
+.back_img{
+	width: 100%;
+}
+.identify_scene{
+	margin-top:3%;
+	margin-bottom: 3%;
+}
+.button{
+	background-color: black;
+}
+.up{
+	background-image:url('../images/add.png');
+	background-size:100% 100%;
+	border:0px;
+	width: 1em;
+	height: 1.5em;
+	margin-left: 4%;
+	margin-right: 4%;
+	background-color: white;
+	border-radius:20px;
+}
+.down{
+	background-image:url('../images/minus.png');
+	background-size:100% 100%;
+	border:0px;
+	width: 1em;
+	height: 1.5em;
+	margin-left: 4%;
+	margin-right: 4%;
+	background-color: white;
+	border-radius:20px;
 }
