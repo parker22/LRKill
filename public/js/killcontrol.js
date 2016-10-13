@@ -13,10 +13,19 @@ $(document).ready(function () {
     $("#witch").hide();
     var player_info = {
         "name": null,
-        "owns":null,
-        "inroom":null
+        "owns": null,
+        "inroom": null,
+        "seatNum": null
     };
-
+    var characterDict = {
+        "wolf": "狼人",
+        "villager": "村民",
+        "predictor": "预言家",
+        "witch": "女巫",
+        "huntsman": "猎人",
+        "Idiot": "白痴",
+        "guard": "守卫"
+    };
     var info_kill = {
         "position_nums": 8,
         "characters": [
@@ -59,7 +68,7 @@ $(document).ready(function () {
     };
     var userInfoVm = new Vue({
         el: '#user-info-panel',
-        data:player_info
+        data: player_info
     })
 
     var man_kill = new Vue({
@@ -115,8 +124,12 @@ $(document).ready(function () {
     });
 
 
-
-
+    userInfoVm.$watch('owns', function (newVal, oldVal) {
+        console.log(newVal)
+        if (newVal != null) {
+            $("#start_game").show();
+        }
+    });
     //创建房间
     $("#create_room").click(function () {
         var characters = [];
@@ -129,6 +142,7 @@ $(document).ready(function () {
         socket.emit("createRoom", characters);
         $("#game-plaza-view").hide();
         $("#enter_room").show();
+
     });
 
     $("form").submit(function (event) {
@@ -136,7 +150,6 @@ $(document).ready(function () {
     });
     //加入已有游戏
     $("#join-game").click(function () {
-
         $("#game-plaza-view").hide();
         $("#join-game-screen").show();
     });
@@ -148,7 +161,9 @@ $(document).ready(function () {
         } else {
             socket.emit("joinRoom", roomNum);
             $("#join-game-screen").hide();
+
             $("#enter_room").show();
+
         }
     });
 
@@ -164,11 +179,11 @@ $(document).ready(function () {
     socket.on("update-user-status", function (status) {
 
         if (status.name != null) {
-            _.extend(player_info,status);
+            _.extend(player_info, status);
             $("#first_view").hide();
-            if(status.inroom!=null){
+            if (status.inroom != null) {
                 $("#enter_room").show();
-            }else{
+            } else {
                 $("#game-plaza-view").show();
 
             }
@@ -186,7 +201,7 @@ $(document).ready(function () {
     socket.on("update-room-status", function (room) {
 
         if (_.isEmpty(roomInfo)) {
-            _.extend(roomInfo ,room) ;
+            _.extend(roomInfo, room);
 
             player_status = new Vue({
                 el: '#player_status',
@@ -200,7 +215,7 @@ $(document).ready(function () {
             })
             console.log(player_status.$data);
         } else {
-            _.extend(roomInfo ,room)
+            _.extend(roomInfo, room)
             console.log(player_status.$data);
         }
 
@@ -426,7 +441,6 @@ $(document).ready(function () {
             }
         }
     });
-
 
 
 });

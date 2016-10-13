@@ -42,7 +42,7 @@ io.sockets.on("connection", function (socket) {
 
     } else {
         uid = uuid.v4();
-        people[uid] = {"name": null, "owns": null, "inroom": null};
+        people[uid] = {"name": null, "owns": null, "inroom": null,"seatNum":null};
     }
     if (people[uid].inroom!=null){
         console.log(people[uid])
@@ -178,6 +178,7 @@ io.sockets.on("connection", function (socket) {
             room.setCharacters(chars);
 
             io.to(socket.room).emit("update-room-status", rooms[id]);
+            socket.emit("update-user-status", people[uid]);
             socket.emit("sendRoomID", {id: id});
             // chatHistory[socket.room] = [];
         } else {
@@ -207,9 +208,10 @@ io.sockets.on("connection", function (socket) {
         var room = rooms[user.inroom];
         room.characters[seatNumber].c_status = user.name;
         room.characters[seatNumber].c_uid = uid;
+        user.seatNum = seatNumber;
         console.log(room);
         io.sockets.in(socket.room).emit("update-room-status", room);
-
+        socket.emit("update-user-status", people[uid]);
     });
     socket.on("joinRoom", function (id) {
         if (typeof people[uid] !== "undefined") {
@@ -233,8 +235,8 @@ io.sockets.on("connection", function (socket) {
                         io.sockets.in(socket.room).emit("update", user.name + " has connected to " + room.name + " room.");
                         socket.emit("update", "Welcome to " + room.name + ".");
                         io.to(socket.room).emit("update-room-status", rooms[id]);
+                        socket.emit("update-user-status", people[uid]);
                         socket.emit("sendRoomID", {id: id});
-
                     }
                 }
             }
