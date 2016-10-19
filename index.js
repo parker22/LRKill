@@ -52,6 +52,9 @@ io.sockets.on("connection", function (socket) {
         socket.join(socket.room)
         console.log(socket.room)
         io.to(socket.room).emit("update-room-status", rooms[people[uid].inroom]);
+        socket.emit("init-game");
+        socket.emit("update-user-status", people[uid]);
+
     }
     socket.on("joinserver", function (name) {
         socket.handshake.session.userid = uid;

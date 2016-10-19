@@ -11,6 +11,9 @@ $(document).ready(function () {
     $("#wolf").hide();
     $("#predictor").hide();
     $("#witch").hide();
+
+
+    var viewModels = ["witch","night","predictor","identify","wolf","guard","enter_room","game-plaza-view"]
     function playAudios(audioList) {
         var index = 1;
         var strings = audioList.split(" ");
@@ -84,6 +87,20 @@ $(document).ready(function () {
             }
         ]
     };
+    function ViewController(views) {
+        this.views = views;
+    }
+
+    ViewController.prototype.onlyShow = function(view)
+    {
+        this.views.forEach(function(v) {
+            $("#"+v).hide()
+        });
+        $("#"+view).show()
+    };
+
+    var viewController =  new ViewController(viewModels)
+
     var userInfoVm = new Vue({
         el: '#user-info-panel',
         data: player_info
@@ -200,6 +217,7 @@ $(document).ready(function () {
             if (status.inroom != null) {
                 if(kill_process!=null){
                     console.log("现在是"+ kill_process.room.step)
+                    viewController.onlyShow(kill_process.room.step)
                 }else $("#enter_room").show();
             } else {
                 $("#game-plaza-view").show();
