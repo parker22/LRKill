@@ -39,17 +39,22 @@ io.sockets.on("connection", function (socket) {
 
     if (uid != null) {
         socket.emit("update-user-status", people[uid]);
-
+        if (people[uid].name != null) {
+            socket.emit("update", "欢迎回到游戏，" + people[uid].name);
+        }
     } else {
         uid = uuid.v4();
-        people[uid] = {"name": null, "owns": null, "inroom": null};
+        people[uid] = {"name": null, "owns": null, "inroom": null, "seatNum": null};
     }
-    if (people[uid].inroom!=null){
+    if (people[uid].inroom != null) {
         console.log(people[uid])
-        socket.room = 'room'+people[uid].inroom
+        socket.room = 'room' + people[uid].inroom
         socket.join(socket.room)
         console.log(socket.room)
         io.to(socket.room).emit("update-room-status", rooms[people[uid].inroom]);
+        socket.emit("init-game");
+        socket.emit("update-user-status", people[uid]);
+
     }
     socket.on("joinserver", function (name) {
         socket.handshake.session.userid = uid;
@@ -178,6 +183,7 @@ io.sockets.on("connection", function (socket) {
             room.setCharacters(chars);
 
             io.to(socket.room).emit("update-room-status", rooms[id]);
+            socket.emit("update-user-status", people[uid]);
             socket.emit("sendRoomID", {id: id});
             // chatHistory[socket.room] = [];
         } else {
@@ -202,14 +208,151 @@ io.sockets.on("connection", function (socket) {
             socket.emit("update", "Only the owner can remove a room.");
         }
     });
-    socket.on("sit", function (seatNumber) {
+    socket.on("startGame", function () {
         var user = people[uid];
         var room = rooms[user.inroom];
-        room.characters[seatNumber].c_status = user.name;
-        room.characters[seatNumber].c_uid = uid;
+        var roomChar = room.characters;
+        var initCharInfo = {
+            "isIdentityConfirmed": false,
+            "isGuard": false,
+            //没被杀用0表示，第一夜被杀用1表示，第二夜被杀用2表示（第几也被杀就用当此的夜数表示）
+            "isKill": 0,
+            "isSave": false,
+            "isPosin": 0,
+            "isDead": false,
+            "isVoted": 0,
+            "antidote": false,
+            "poison": false
+        };
+        _.each(roomChar, function (char) {
+            _.extend(char, initCharInfo);
+        });
+
+        console.log(room);
+        io.sockets.in(socket.room).emit("update-room-status", room);
+        io.sockets.in(socket.room).emit("init-game");
+    });
+    socket.on("confirmIdentity", function (seatNum) {
+        console.log(seatNum)
+        var user = people[uid];
+        var room = rooms[user.inroom];
+        room.characters[seatNum].isIdentityConfirmed = true;
+
         console.log(room);
         io.sockets.in(socket.room).emit("update-room-status", room);
 
+    });
+
+
+    socket.on("sit", function (seatNumber) {
+        var user = people[uid];
+        var room = rooms[user.inroom];
+        if (user.seatNum != null) {
+            room.characters[user.seatNum].c_status = "awaiting";
+            room.characters[user.seatNum].c_uid = null;
+
+        }
+        room.characters[seatNumber].c_status = user.name;
+        room.characters[seatNumber].c_uid = uid;
+        user.seatNum = seatNumber;
+        console.log(room);
+        io.sockets.in(socket.room).emit("update-room-status", room);
+        socket.emit("update-user-status", people[uid]);
+    });
+
+    socket.on("startFirstNight", function (seatNumber) {
+        var user = people[uid];
+        var room = rooms[user.inroom];
+        room.dayNo++
+        room.stepFlow = _.intersection(["guard","wolf","predictor","witch"],_.uniq(_.map(room.characters, function(c, key){ return c.c_name }))).slice(0)
+        console.log(room);
+        io.sockets.in(socket.room).emit("update-room-status", room);
+        var audios = "night" +"_start";
+        io.sockets.in(socket.room).emit("execute-step",{step:"night",audioList :audios});
+        room.step = room.stepFlow[0]
+        setTimeout(function(){
+            io.sockets.in(socket.room).emit("execute-step",{step:room.stepFlow[0],audioList :room.stepFlow[0]+"_start"});
+        }, 5000);
+
+    });
+    socket.on("action", function (actionData) {
+        var user = people[uid];
+        var room = rooms[user.inroom];
+        console.log("action",actionData)
+        var goNextStep = false;
+        var goDayStep = false;
+        var thisAction = actionData.action;
+        if (thisAction=="guard"){
+            room.lastGuard=actionData.detail
+            goNextStep=!goNextStep
+        }
+        else if(thisAction=="killChoice"){
+            var targetNum = actionData.detail
+            var killerIdx = _.findIndex(room.killChoices, {
+                wolf: parseInt(user.seatNum)
+            });
+            if (killerIdx!=-1){
+                room.killChoices.splice(killerIdx,1)
+            }
+            room.killChoices.push({wolf:parseInt(user.seatNum),target:parseInt(targetNum)})
+
+        }else if(thisAction=="wolf"){
+            room.lastKill = actionData.detail
+            goNextStep=!goNextStep
+        }
+        else if(thisAction=="predictor"){
+            goNextStep=!goNextStep
+        }
+        else if(thisAction=="witchSave"){
+            room.lastSave = room.lastKill
+        }
+        else if(thisAction=="witchPoison"){
+            room.lastPoison = actionData.detail
+        }
+        else if(thisAction=="witch"){
+            goNextStep=!goNextStep
+        }
+        if (goNextStep){
+            console.log(room.stepFlow)
+            var thisStepIdx = _.indexOf(room.stepFlow, thisAction)
+            console.log(thisStepIdx)
+            console.log(room.stepFlow[thisStepIdx])
+            if (thisStepIdx<room.stepFlow.length-1){
+                room.step=room.stepFlow[thisStepIdx+1]
+                var audios = room.stepFlow[thisStepIdx]+"_stop " + room.stepFlow[thisStepIdx+1] +"_start"
+                console.log(audios)
+                io.sockets.in(socket.room).emit("execute-step",{step:room.stepFlow[thisStepIdx+1],audioList :audios});
+            }
+            else{
+                room.deathPool.splice(0,room.deathPool.length)
+                var deathAudio='';
+                if (room.lastPoison!=0){
+                    room.deathPool.push(room.lastPoison)
+                }
+                if ((room.lastKill==(room.lastSave||room.lastGuard))&&room.lastSave!=room.lastGuard&&room.deathPool.length==0||room.lastKill==0){
+                    deathAudio = 'pingan'
+                }else {
+                    room.deathPool.push(room.lastKill)
+                    room.deathPool.sort()
+
+                    _.each(room.deathPool,function (death) {
+                        deathAudio+= (death+" hao ")
+                    })
+                    deathAudio+="which_isdead"
+                }
+                var audios = room.stepFlow[thisStepIdx]+"_stop " + "tianliang "
+                if (room.dayNo ==1){
+                    audios+= "police_vote"
+                }else audios+= "tonight "+ deathAudio
+                console.log(audios)
+                io.sockets.in(socket.room).emit("execute-step",{step:"day",audioList :audios});
+            }
+        }
+        if (goDayStep){
+
+        }
+        io.sockets.in(socket.room).emit("update-room-status", room);
+        console.log(room)
     });
     socket.on("joinRoom", function (id) {
         if (typeof people[uid] !== "undefined") {
@@ -233,8 +376,8 @@ io.sockets.on("connection", function (socket) {
                         io.sockets.in(socket.room).emit("update", user.name + " has connected to " + room.name + " room.");
                         socket.emit("update", "Welcome to " + room.name + ".");
                         io.to(socket.room).emit("update-room-status", rooms[id]);
+                        socket.emit("update-user-status", people[uid]);
                         socket.emit("sendRoomID", {id: id});
-
                     }
                 }
             }

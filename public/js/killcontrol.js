@@ -10,13 +10,43 @@ $(document).ready(function () {
   //  $("#night").hide();
     $("#guard").hide();
     $("#identify").hide();
-    $("#wolves").hide();
+    $("#wolf").hide();
     $("#predictor").hide();
     $("#witch").hide();
+
+
+    var viewModels = ["witch","night","predictor","identify","wolf","guard","enter_room","game-plaza-view"]
+    function playAudios(audioList) {
+        var index = 1;
+        var strings = audioList.split(" ");
+
+        var audio = new Audio("sounds/" + strings[0] + ".mp3")
+        audio.play();
+
+        audio.onended = function () {
+            if (index < strings.length) {
+                audio.src = "sounds/" + strings[index] + ".mp3";
+                setTimeout(function () {
+                    audio.play();
+                },50)
+                index++;
+            }
+        };
+    }
     var player_info = {
         "name": null,
-        "owns":null,
-        "inroom":null
+        "owns": null,
+        "inroom": null,
+        "seatNum": null
+    };
+    var characterDict = {
+        "wolf": "狼人",
+        "villager": "村民",
+        "predictor": "预言家",
+        "witch": "女巫",
+        "huntsman": "猎人",
+        "Idiot": "白痴",
+        "guard": "守卫"
     };
 
     var info_kill = {
@@ -24,27 +54,27 @@ $(document).ready(function () {
         "characters": [
             {
                 "c_name": "wolf",
-                "c_num": 3,
+                "c_num": 1,
                 "limit_num": false
             },
             {
                 "c_name": "villager",
-                "c_num": 3,
+                "c_num": 0,
                 "limit_num": false
             },
             {
                 "c_name": "predictor",
-                "c_num": 1,
+                "c_num": 0,
                 "limit_num": true
             },
             {
                 "c_name": "witch",
-                "c_num": 1,
+                "c_num": 0,
                 "limit_num": true
             },
             {
                 "c_name": "huntsman",
-                "c_num": 1,
+                "c_num": 0,
                 "limit_num": true
             },
             {
@@ -54,14 +84,28 @@ $(document).ready(function () {
             },
             {
                 "c_name": "guard",
-                "c_num": 0,
+                "c_num": 1,
                 "limit_num": true
             }
         ]
     };
+    function ViewController(views) {
+        this.views = views;
+    }
+
+    ViewController.prototype.onlyShow = function(view)
+    {
+        this.views.forEach(function(v) {
+            $("#"+v).hide()
+        });
+        $("#"+view).show()
+    };
+
+    var viewController =  new ViewController(viewModels)
+
     var userInfoVm = new Vue({
         el: '#user-info-panel',
-        data:player_info
+        data: player_info
     })
 
     var man_kill = new Vue({
@@ -111,14 +155,19 @@ $(document).ready(function () {
                 //   $("#msg").focus();
                 // }
                 $("#first_view").hide();
+                $("#user-info-panel").show();
                 $("#game-plaza-view").show();
             }
         }
     });
 
 
-
-
+    // userInfoVm.$watch('owns', function (newVal, oldVal) {
+    //     console.log(newVal)
+    //     if (newVal != null) {
+    //         $("#start_game").show();
+    //     }
+    // });
     //创建房间
     $("#create_room").click(function () {
         var characters = [];
@@ -131,6 +180,7 @@ $(document).ready(function () {
         socket.emit("createRoom", characters);
         $("#game-plaza-view").hide();
         $("#enter_room").show();
+
     });
 
     $("form").submit(function (event) {
@@ -138,7 +188,6 @@ $(document).ready(function () {
     });
     //加入已有游戏
     $("#join-game").click(function () {
-
         $("#game-plaza-view").hide();
         $("#join-game-screen").show();
     });
@@ -150,7 +199,9 @@ $(document).ready(function () {
         } else {
             socket.emit("joinRoom", roomNum);
             $("#join-game-screen").hide();
+
             $("#enter_room").show();
+
         }
     });
 
@@ -158,23 +209,22 @@ $(document).ready(function () {
     // if(){
     //
     // }
+    var kill_process;
 
-    $("#start_game").click(function () {
-        $("#enter_room").hide();
-        $("#identify").show();
-    });
     socket.on("update-user-status", function (status) {
 
         if (status.name != null) {
-            _.extend(player_info,status);
+            _.extend(player_info, status);
             $("#first_view").hide();
-            if(status.inroom!=null){
-                $("#enter_room").show();
-            }else{
+            if (status.inroom != null) {
+                if(kill_process!=null){
+                    console.log("现在是"+ kill_process.room.step)
+                    viewController.onlyShow(kill_process.room.step)
+                }else $("#enter_room").show();
+            } else {
                 $("#game-plaza-view").show();
 
             }
-            toastr.info('欢迎回到游戏' + status.name)
         }
         console.log(userInfoVm.$data);
 
@@ -185,24 +235,293 @@ $(document).ready(function () {
 
     });
 
+    Vue.component('confirmedPlayer-item', {
+        template: '\
+    <li>\
+      {{ player }}\
+    </li>\
+  ',
+        props: ['player']
+    })
     socket.on("update-room-status", function (room) {
 
         if (_.isEmpty(roomInfo)) {
-            _.extend(roomInfo ,room) ;
+            _.extend(roomInfo, room);
 
             player_status = new Vue({
                 el: '#player_status',
                 data: roomInfo,
+                computed: {
+                    isOwner: function () {
+                        return this.id == userInfoVm.owns;
+                    }
+                },
                 methods: {
                     sit: function (seatNum) {
+                        console.log(this.isOwner)
                         socket.emit("sit", seatNum);
                         console.log("sit" + seatNum)
+                    },
+                    startGame: function () {
+                        $("#enter_room").hide();
+                        $("#identify").show();
+                        socket.emit("startGame");
+                    },
+                    initGame: function () {
+                        $("#enter_room").hide();
+                        $("#identify").show();
+                        kill_process = new Vue({
+                            el: '#panda_process',
+                            data: {
+                                room: roomInfo,
+
+                            },
+                            methods: {
+                                //确认身份
+                                confirmIdentity: function () {
+                                    socket.emit("confirmIdentity", userInfoVm.seatNum);
+                                    $("#identify").hide();
+                                    $("#room-info-panel").show();
+                                },
+                                startFirstNight: function () {
+
+                                    socket.emit("startFirstNight");
+
+                                },
+                                // refreshPlayers: function () {
+                                //     // _.each(this.room["confirmedPlayers"],function (player) {
+                                //     //     this.confirmedPlayers.push(player)
+                                //     // });
+                                //     this.confirmedPlayers = _.union (this.confirmedPlayers,this.room["confirmedPlayers"])
+                                //     console.log(this.confirmedPlayers)
+                                // }
+                                // //守卫的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
+                                guard: function (index) {
+                                    console.log("守卫" + index)
+                                    socket.emit("action", {action: "guard", detail: parseInt(index)});
+                                    $(".guard_button").addClass("disabled");
+                                    var num = index + 1;
+                                    $("#guardbutton" + num).parents(".pos_box").css({"background-color": "green"});
+                                    setTimeout(function () {
+                                        $("#guard").hide();
+                                    }, 2000);
+                                },
+                                guard_restart: function () {
+                                    $(".guard_button").removeClass("disabled");
+                                    $(".guard_button").parents("#pos_id").css({"background-color": "white"});
+                                    for (var i = 0; i < allPlayerInfo.position.length; i++) {
+                                        if (allPlayerInfo.position[i].isGuard == true) {
+                                            allPlayerInfo.position[i].isGuard == false;
+                                        }
+                                    }
+                                },
+                                // //狼人的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
+                                wolves: function (index) {
+                                    console.log("想杀害" + index)
+                                    socket.emit("action", {action: "killChoice", detail: index});
+                                },
+                                wolvesDecision: function () {
+                                    console.log("决定杀害" + this.killDecision)
+                                    socket.emit("action", {action: "wolf", detail: this.killDecision});
+                                },
+                                wolves_restart: function () {
+                                    $(".wolves_button").removeClass("disabled");
+                                    $(".wolves_button").parents("#pos_id").css({"background-color": "white"});
+                                    for (var i = 0; i < allPlayerInfo.position.length; i++) {
+                                        if (allPlayerInfo.position[i].isKill == allPlayerInfo.round) {
+                                            allPlayerInfo.position[i].isKill == 0;
+                                            allPlayerInfo.position.today_killed_indx = 0;
+                                        }
+                                    }
+                                },
+                                // //预言家的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
+                                predictorCheck: function (index) {
+                                    $(".predictor_button").addClass("disabled");
+
+                                    $("#predictorbutton" + index).parents(".pos_box").css({"background-color": "green"});
+                                    var idnt = this.room.characters[index].c_name;
+                                    if (idnt == "wolf") {
+                                        alert("他是坏人");
+                                    } else {
+                                        alert("他是好人");
+                                    }
+                                },
+                                predictorConfirm: function () {
+                                    socket.emit("action", {action: "predictor", detail: null});
+
+                                },
+                                // //预言家的方法和逻辑，点一个按钮后 其他按钮变灰色 毒人和救人
+                                // witch: function (index) {
+                                //     $(".witch_button").addClass("disabled");
+                                //     var num = index + 1;
+                                //     $("#witchbutton" + num).parents("#pos_id").css({"background-color": "green"});
+                                //     allPlayerInfo.position[index].isPosin = allPlayerInfo.round;
+                                // },
+                                witchSave: function () {
+                                    $(".witch_button").addClass("disabled");
+                                    socket.emit("action", {action: "witchSave", detail: null});
+                                },
+                                witchPoison: function (index) {
+                                    $(".witch_button").addClass("disabled");
+                                    socket.emit("action", {action: "witchPoison", detail: parseInt(index)});
+                                },
+                                witchConfirm: function (index) {
+                                    socket.emit("action", {action: "witch", detail: null});
+                                },
+                                // witch_restart: function () {
+                                //     $(".witch_button").removeClass("disabled");
+                                //     $(".witch_button").parents("#pos_id").css({"background-color": "white"});
+                                //     if (allPlayerInfo.position[allPlayerInfo.today_killed_indx - 1].isKill == 0) {
+                                //         allPlayerInfo.position[allPlayerInfo.today_killed_indx - 1].isKill == allPlayerInfo.round;
+                                //     } else {
+                                //         for (var i = 0; i < allPlayerInfo.position.length; i++) {
+                                //             if (allPlayerInfo.position[i].isPosin == allPlayerInfo.round) {
+                                //                 allPlayerInfo.position[i].isPosin == 0;
+                                //             }
+                                //         }
+                                //     }
+                                // }
+                            },
+                            // watch: {
+                            //     // whenever question changes, this function will run
+                            //     characters: function (chars) {
+                            //         _.union (this.confirmedPlayers , _.map(_.filter(chars, function (o) {
+                            //             return o.isIdentityConfirmed
+                            //         }),'c_status'));
+                            //         console.log(this.confirmedPlayers)
+                            //     }
+                            // },
+                            computed: {
+                                // a computed getter
+                                c_name: function () {
+                                    // `this` points to the vm instance
+                                    // console.log(roomInfo.characters[userInfoVm.seatNum].c_name)
+                                    return roomInfo.characters[userInfoVm.seatNum].c_name
+                                },
+                                c_caption: function () {
+                                    // `this` points to the vm instance
+                                    return characterDict[this.c_name]
+                                },
+                                confirmedPlayers: function () {
+
+                                    return _.keys(_.pickBy(this.room.characters, function (v, k) {
+                                        return v.isIdentityConfirmed == true;
+                                    }));
+
+                                },
+                                isOwner: function () {
+                                    return player_status.isOwner
+                                },
+                                killChoices: function () {
+                                    var result = _.chain(this.room.killChoices)
+                                        .groupBy("target")
+                                        .toPairs()
+                                        .map(function (currentItem) {
+                                            return _.zipObject(["target", "wolves"], currentItem);
+                                        })
+                                        .value();
+                                    console.log(result)
+                                    return result
+                                },
+                                killDecision: function () {
+                                    if (this.killChoices.length == 1) {
+                                        return parseInt(this.killChoices[0].target)
+                                    }
+                                    else return 0
+                                }
+
+                            }
+                        });
+
                     }
                 }
-            })
+            });
+            socket.on("init-game", function () {
+                player_status.initGame()
+            });
+            socket.on("execute-step", function (stepData) {
+                console.log("execute-step-data", stepData)
+                var step = stepData.step;
+                var strings = stepData["audioList"].split(" ");
+                var index = 1;
+                var audio = new Audio("sounds/" + strings[0] + ".mp3")
+                audio.play();
+
+                audio.onended = function () {
+                    if (index < strings.length) {
+                        audio.src = "sounds/" + strings[index] + ".mp3";
+                        setTimeout(function () {
+                            audio.play();
+                        }, 1)
+                        index++;
+                    }
+                };
+
+
+                //这个地方需要修改，就是一个个人身份的判断，判断是不是守卫，是守卫的话，跳转守卫界面，不是的话就一直黑天
+                $("#night").show()
+                $('#wolf').hide()
+                $('#guard').hide()
+                $('#predictor').hide()
+                $('#witch').hide()
+                if (step == "night") {
+                    console.log("天黑了")
+                    $("#confirmedPlayers").hide();
+                    $("#night").show();
+                }
+                else if (step == "guard") {
+                    console.log("守卫请睁眼")
+                    if (kill_process.c_name == step) {
+                        console.log("我是守卫")
+                        setTimeout("$('#night').hide()", 500);
+                        setTimeout("$('#guard').show()", 1000);
+                    }
+                }
+                else if (step == "wolf") {
+                    console.log("狼人请睁眼")
+                    if (kill_process.c_name == step) {
+                        console.log("我是狼人")
+                        setTimeout("$('#night').hide()", 500);
+                        setTimeout("$('#wolf').show()", 1000);
+                    }
+                }
+                else if (step == "predictor") {
+                    console.log("预言家请睁眼")
+                    if (kill_process.c_name == step) {
+                        console.log("我是预言家")
+                        setTimeout("$('#night').hide()", 500);
+                        setTimeout("$('#predictor').show()", 1000);
+                    }
+                }
+                else if (step == "witch") {
+                    console.log("女巫请睁眼")
+                    if (kill_process.c_name == step) {
+                        console.log("我是女巫")
+                        setTimeout("$('#night').hide()", 500);
+                        setTimeout("$('#witch').show()", 1000);
+                    }
+                }
+                else if (step == "day") {
+                    console.log("天亮了")
+                    setTimeout("$('#night').hide()", 500);
+
+                }
+
+            });
             console.log(player_status.$data);
         } else {
-            _.extend(roomInfo ,room)
+            _.extend(roomInfo, room);
+            // if (kill_process != null) {
+            //     kill_process.refreshPlayers()
+            // }
+
+            // var keys = [];
+            // _.each(roomInfo.characters, function (char, key) {
+            //
+            //     if (char.isIdentityConfirmed) {
+            //         keys.push(key);
+            //     }
+            // });
             console.log(player_status.$data);
         }
 
@@ -210,18 +529,30 @@ $(document).ready(function () {
 
 
     //进入确认身份界面，当看完身份点击确认时，界面进入天黑，并且开始游戏播放声音，播放完，开始守卫操作
-    $("#identify_button").click(function () {
-        $("#identify").hide();
-        $("#night").show();
-        var audio = document.createElement("audio");
-        audio.src = "sounds/start_sound.mp3";
-        audio.play();
-        //这个地方需要修改，就是一个个人身份的判断，判断是不是守卫，是守卫的话，跳转守卫界面，不是的话就一直黑天
-        if ("guard" == "guard") {
-            setTimeout("$('#night').hide()", 19000);
-            setTimeout("$('#guard').show()", 19005);
-        }
-    });
+    // $("#identify_button").click(function () {
+    //     $("#identify").hide();
+    //     $("#night").show();
+    //     var strings = ("tianhei " + step + "_start").split(" ");
+    //     var index = 1;
+    //
+    //     audio.src = "sounds/" + strings[0] + ".mp3";
+    //     audio.play();
+    //
+    //     audio.onended = function () {
+    //         if (index < strings.length) {
+    //             audio.src = "sounds/" + strings[index] + ".mp3";
+    //             audio.play();
+    //             index++;
+    //         }
+    //     };
+    //
+    //
+    //     //这个地方需要修改，就是一个个人身份的判断，判断是不是守卫，是守卫的话，跳转守卫界面，不是的话就一直黑天
+    //     if ("guard" == "guard") {
+    //         setTimeout("$('#night').hide()", 19000);
+    //         setTimeout("$('#guard').show()", 19005);
+    //     }
+    // });
 
     //守卫操作完点击确认，开始播放声音：狼人请睁眼，播放完进入狼人界面
     $("#guard_confirm").click(function () {
@@ -240,7 +571,7 @@ $(document).ready(function () {
     });
     //狼人操作完点击确认，开始播放声音：预言家请睁眼，播放完进入预言家界面
     $("#wolves_confirm").click(function () {
-        $("#wolves").hide();
+        $("#wolf").hide();
         $("#night").show();
         var audio = document.createElement("audio");
         audio.src = "sounds/start_sound.mp3";
@@ -274,161 +605,6 @@ $(document).ready(function () {
         audio.play();
         //然后就到一开始的界面 天亮了
     });
-
-
-    //服务器会给我的所有信息是这种格式被我提取
-    var allPlayerInfo = {
-        "round": 0,
-        "today_killed_indx": 0,
-        "position": [
-            {
-                "num": 1,
-                "player_n": "sb",
-                "player_p": "predictor",
-                "isGuard": false,
-                //没被杀用0表示，第一夜被杀用1表示，第二夜被杀用2表示（第几也被杀就用当此的夜数表示）
-                "isKill": 0,
-                "isSave": false,
-                "isPosin": 0,
-                "isDead": false,
-                "isVoted": 0,
-                "antidote": false,
-                "poison": false
-            },
-            {
-                "num": 2,
-                "player_n": "sb",
-                "player_p": "wolf",
-                "isGuard": false,
-                "isKill": 0,
-                "isSave": false,
-                "isPosin": 0,
-                "isDead": false,
-                "isVoted": 0,
-                "antidote": false,
-                "poison": false
-            },
-            {
-                "num": 3,
-                "player_n": "sb",
-                "player_p": "guard",
-                "isGuard": false,
-                "isKill": 0,
-                "isSave": false,
-                "isPosin": 0,
-                "isDead": false,
-                "isVoted": 0,
-                "antidote": false,
-                "poison": false
-            },
-            {
-                "num": 4,
-                "player_n": "sb",
-                "player_p": "witch",
-                "isGuard": false,
-                "isKill": 0,
-                "isSave": false,
-                "isPosin": 0,
-                "isDead": false,
-                "isVoted": 0,
-                "antidote": false,
-                "poison": false
-            },
-            {
-                "num": 5,
-                "player_n": "sb",
-                "player_p": "huntsman",
-                "isGuard": false,
-                "isKill": 0,
-                "isSave": false,
-                "isPosin": 0,
-                "isDead": false,
-                "isVoted": 0,
-                "antidote": false,
-                "poison": false
-            }
-
-        ]
-    };
-
-    var kill_process = new Vue({
-        el: '#panda_process',
-        data: allPlayerInfo,
-        methods: {
-            //守卫的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
-            guard: function (index) {
-                allPlayerInfo.position[index].isGuard = true;
-                $(".guard_button").addClass("disabled");
-                var num = index + 1;
-                $("#guardbutton" + num).parents("#pos_id").css({"background-color": "green"});
-            },
-            guard_restart: function () {
-                $(".guard_button").removeClass("disabled");
-                $(".guard_button").parents("#pos_id").css({"background-color": "white"});
-                for (var i = 0; i < allPlayerInfo.position.length; i++) {
-                    if (allPlayerInfo.position[i].isGuard == true) {
-                        allPlayerInfo.position[i].isGuard == false;
-                    }
-                }
-            },
-            //狼人的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
-            wolves: function (index) {
-                allPlayerInfo.position[index].isKill = allPlayerInfo.round;
-                var num = index + 1;
-                allPlayerInfo.position.today_killed_indx = num;
-                $(".wolves_button").addClass("disabled");
-                $("#wolvesbutton" + num).parents("#pos_id").css({"background-color": "green"});
-            },
-            wolves_restart: function () {
-                $(".wolves_button").removeClass("disabled");
-                $(".wolves_button").parents("#pos_id").css({"background-color": "white"});
-                for (var i = 0; i < allPlayerInfo.position.length; i++) {
-                    if (allPlayerInfo.position[i].isKill == allPlayerInfo.round) {
-                        allPlayerInfo.position[i].isKill == 0;
-                        allPlayerInfo.position.today_killed_indx = 0;
-                    }
-                }
-            },
-            //预言家的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
-            predictor: function (index) {
-                $(".predictor_button").addClass("disabled");
-                var num = index + 1;
-                $("#predictorbutton" + num).parents("#pos_id").css({"background-color": "green"});
-                var idnt = allPlayerInfo.position[index].player_p;
-                if (idnt == "wolf") {
-                    alert("他是狼人");
-                } else {
-                    alert("他是好人");
-                }
-            },
-            //预言家的方法和逻辑，点一个按钮后 其他按钮变灰色 毒人和救人
-            witch: function (index) {
-                $(".witch_button").addClass("disabled");
-                var num = index + 1;
-                $("#witchbutton" + num).parents("#pos_id").css({"background-color": "green"});
-                allPlayerInfo.position[index].isPosin = allPlayerInfo.round;
-            },
-            witch_save: function (index) {
-                $(".witch_button").addClass("disabled");
-                var save_num = allPlayerInfo.today_killed_indx - 1;
-                allPlayerInfo.position[save_num].isKill = 0;
-            },
-            witch_restart: function () {
-                $(".witch_button").removeClass("disabled");
-                $(".witch_button").parents("#pos_id").css({"background-color": "white"});
-                if (allPlayerInfo.position[allPlayerInfo.today_killed_indx - 1].isKill == 0) {
-                    allPlayerInfo.position[allPlayerInfo.today_killed_indx - 1].isKill == allPlayerInfo.round;
-                } else {
-                    for (var i = 0; i < allPlayerInfo.position.length; i++) {
-                        if (allPlayerInfo.position[i].isPosin == allPlayerInfo.round) {
-                            allPlayerInfo.position[i].isPosin == 0;
-                        }
-                    }
-                }
-            }
-        }
-    });
-
 
 
 });
