@@ -9,6 +9,13 @@ function Room(name, id, owner) {
   this.dayNo = 0;
   this.isNight = false;
   this.step = null;
+  this.lastGuard = 0;
+  this.lastKill=0;
+  this.lastPoison =0;
+  this.lastSave = 0;
+  this.killChoices = [];
+  this.stepFlow=[];
+  this.deathPool = []
   this.characters = {};
 };
 
