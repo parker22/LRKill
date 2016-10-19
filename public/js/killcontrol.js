@@ -2,10 +2,12 @@
 //   event.preventDefault();
 // }
 $(document).ready(function () {
+  //test footer
+
     var socket = io();
     $("#game-plaza-view").hide();
     $("#enter_room").hide();
-    $("#night").hide();
+  //  $("#night").hide();
     $("#guard").hide();
     $("#identify").hide();
     $("#wolves").hide();

@@ -5,14 +5,34 @@ html,body{
 body{
 	min-height: 100%;
 	height: auto !important;
-	background-color: #ce8f1d;
-		border: 5px solid #B05C1D;
+	background-color: #352f2f;
+	border: 3px solid #B05C1D;
 	}
 .title{
 	margin-top: 8%;
 }
 .title_name{
 	text-align: center;
+}
+.title_text{
+	font-family:Georgia;
+	color: white;
+	font-size: 1em;
+}
+.small_title{
+	margin-top: 5%;
+	margin-left: 4%;
+	color:white;
+	font-size:1.5em;
+}
+.newfont{
+	color:white;
+}
+.personal_info{
+	border: 3px solid white;
+	margin-left: 2%;
+	margin-right: 2%;
+	border-radius: 15%;
 }
 .player_name{
 	margin-top:5%;
@@ -69,6 +89,29 @@ body{
 	border-radius:20px;
 }
 .down{
+	background-image:url('../images/minus.png');
+	background-size:100% 100%;
+	border:0px;
+	width: 1em;
+	height: 1.5em;
+	margin-left: 4%;
+	margin-right: 4%;
+	background-color: transparent;;
+	border-radius:20px;
+}
+.night{
+	margin-left: 10%;
+	margin-right: 10%;
+}
+.footer{
+	position:absolute;
+	bottom:0px;
+	width: 100%;
+	margin: 0;
+
+	height: 5%;/* or however high you would like */
+}
+.xiangshang_caidan{
 	background-image:url('../images/minus.png');
 	background-size:100% 100%;
 	border:0px;

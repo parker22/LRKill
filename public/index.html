@@ -30,12 +30,30 @@
 </head>
 
 <body>
+<div id="main">
   <div class="container-fluid">
-    <div class="row">
-      <div class="title">
-        <h1 class="title_name"><a class ="title_text" href="index.html">狼人杀</a></h1>
+    <div class="row title">
+      <h1 class="title_name"><a class ="title_text" href="index.html">狼人杀</a></h1>
+    </div>
+    <div class="row mini_title">
+        <h1 class = "small_title">狼人杀</h1>
+    </div>
+    <!-- 两栏个人身份信息 -->
+    <div class = "row center_top position_info">
+      <div class = "col-xs-6 col-sm-6 col-md-6">
+        <div class = "personal_info">
+          <p class = "newfont">昵称：<span></span></p>
+          <p class = "newfont">房间：<span></span></p>
+        </div>
+      </div>
+      <div class = "col-xs-6 col-sm-6 col-md-6">
+        <div class = "personal_info">
+          <p class = "newfont">号码：<span></span></p>
+          <p class = "newfont">身份：<span></span></p>
+        </div>
       </div>
     </div>
+
     <div id="first_view">
       <div id="player_n" class="row player_input">
         <input id="player_name_input" type="text" placeholder="输入你的昵称">
@@ -124,8 +142,8 @@
             </div>
         </div>
         <!-- 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 -->
-        <div id="night">
-            <img class="back_img" src="images/background.jpg"/>
+        <div id="night" class = "night">
+            <img class="back_img" src="images/background1.png"/>
         </div>
         <!-- 守卫操作 -->
         <div id="guard" class="row center_top">
@@ -243,9 +261,12 @@
             </div>
         </div>
         <!-- 女巫操作完，等5秒钟的时间，播放声音，天亮了，请大家睁眼 -->
-
     </div>
+</div>
 
+<div class = "footer">
+  <a class="btn xiangshang_caidan" id="bottom_banner_button" role="button"></a>
+</div>
 
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
