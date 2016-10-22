@@ -16,6 +16,7 @@ function Room(name, id, owner) {
   this.killChoices = [];
   this.stepFlow=[];
   this.deathPool = []
+  this.outPool=[]
   this.characters = {};
 };
 
