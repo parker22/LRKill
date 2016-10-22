@@ -2,302 +2,319 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="../../favicon.ico">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="../../favicon.ico">
 
-    <title>狼人杀app</title>
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
-    <link href="css/style.css" rel="stylesheet" type="text/css"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
-    <!-- Optional theme -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous"></script>
-    <script src="js/lodash.js"></script>
-    <script src="https://cdn.jsdelivr.net/vue/2.0.2/vue.js"></script>
-    <script src="js/killcontrol.js"></script>
+  <title>狼人杀app</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+  integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+  crossorigin="anonymous">
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+  <!-- Optional theme -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+  integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+  crossorigin="anonymous"></script>
+  <script src="js/lodash.js"></script>
+  <script src="https://cdn.jsdelivr.net/vue/2.0.2/vue.js"></script>
+  <script src="js/killcontrol.js"></script>
 
 </head>
 
 <body>
-<div id="main">
-  <div class="container-fluid">
-    <div class="row title">
-      <h1 class="title_name"><a class ="title_text" href="index.html">狼人杀</a></h1>
-    </div>
-    <div class="row mini_title">
-        <h1 class = "small_title">狼人杀</h1>
-    </div>
-    <!-- 两栏个人身份信息 -->
-    <div class = "row center_top position_info">
-      <div class = "col-xs-6 col-sm-6 col-md-6">
-        <div class = "personal_info">
-          <p class = "newfont">昵称：<span></span></p>
-          <p class = "newfont">房间：<span></span></p>
-        </div>
-      </div>
-      <div class = "col-xs-6 col-sm-6 col-md-6">
-        <div class = "personal_info">
-          <p class = "newfont">号码：<span></span></p>
-          <p class = "newfont">身份：<span></span></p>
-        </div>
-      </div>
-    </div>
+  <div id="main">
+    <div class="container-fluid">
 
-    <div id="first_view">
-        <div id="player_n" class="row player_input">
-            <input id="player_name_input" type="text" placeholder="输入你的昵称">
-            <br>
-            <a id="enter_game" v-on:click="enterGame" class="btn btn-default enter_button" role="button">进入游戏</a>
+      <div id="first_view" class="center">
+        <div id="player_n" class="player_input row">
+          <div class="col-xs-2 col-sm-2 col-md-2">
+          </div>
+          <div class="col-xs-8 col-sm-8 col-md-8 input_name">
+            <input id="player_name_input" class = "input_back" type="text" placeholder="输入你的昵称">
+          </div>
+          <div class="col-xs-2 col-sm-2 col-md-2">
+          </div>
+          <br>
+          <a id="enter_game" v-on:click="enterGame" class="btn  enter_button" role="button"></a>
         </div>
-    </div>
-    <div id="user-info-panel" class="player_name" style="display: none"><p>昵称：<span>{{name}}</span></p>
-        <p>当前号码：<span v-if="seatNum == null">未落座</span><span>{{seatNum}}</span></p></div>
-    <div id="game-plaza-view">
+      </div>
+
+      <div id="game-plaza-view">
         <div id="panda_kill" tyle="display: none;">
-            <div class="row center_top">
-                <div v-for="(char,index) in characters" class="col-xs-4 col-sm-6 col-md-4">
-                    <div class="thumbnail special_thumbnail">
-                        <img :src="'images/'+char.c_name+'.png'" style="display: block;">
+          <div class="row center_top no_margin">
+            <div v-for="(char,index) in characters" class="col-xs-4 col-sm-6 col-md-4 no_padding">
+              <div class="thumbnail special_thumbnail">
+                <img :src="'images/'+char.c_name+'.png'" style="display: block;">
+              </div>
+              <div class="caption">
+                <div class="row center_bottom no_margin">
+                  <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+                    <a v-on:click="minus(index)" class="btn down" role="button"></a>
+                  </div>
+                  <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+                    <div class="text_view">
+                      <span>{{char.c_num}}</span>
                     </div>
-                    <div class="caption">
-                        <div class="row center_bottom">
-                            <a v-on:click="minus(index)" class="btn down" role="button"></a>
-                            <span>{{char.c_num}}</span>
-                            <a v-on:click="add(index)" class="btn up" role="button"></a>
-                        </div>
-                    </div>
+                  </div>
+                  <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+                    <a v-on:click="add(index)" class="btn up" role="button"></a>
+                  </div>
+
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row center_top no_margin">
+            <p>当前人数：<span>{{totalNum}}</span></p>
+          </div>
+        </div>
+        <div class="row button_position no_margin">
+          <div class="col-xs-6 col-sm-6 col-md-6 center no_padding">
+            <a id="create_room" class="btn createroom_button" role="button"></a></div>
+            <div class="col-xs-6 col-sm-6 col-md-6 center no_padding">
+              <a id="join-game" class="btn joingame_button" role="button"></a>
+            </div>
+          </div>
+        </div>
+
+
+        <div id="join-game-screen" style="display: none" class = "center_top">
+          <form class="form-inline" id="joinGameForm">
+            <div class="row">
+              <div class="col-xs-6 col-sm-2 col-md-2 col-xs-offset-3 col-md-offset-5 col-sm-offset-5  inputbg">
+                <input type="text" class="inputtext" placeholder="输入房间号" id="room-num">
+              </div>
+            </div>
+            <div class = "row joinbutton_position">
+              <input type="submit" name="join" id="join" value="" class="btn joinbutton">
+            </div>
+          </form>
+        </div>
+
+        <div id="enter_room" class="row center no_margin">
+          <div id="player_status" class="application_status roomnumber">
+            <div class="row">
+              <div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-3 col-md-offset-3 col-sm-offset-3 roomnumber_top">
+              <span style="">{{id}}号房间</span>
+            </div>
             </div>
 
-            <div class="row center_top">
-                <p>游戏总人数：<span>{{totalNum}}</span></p>
-            </div>
-        </div>
-        <div class="row button_position">
-            <div class="col-xs-6 col-sm-6 col-md-6 center">
-                <a id="create_room" class="btn btn-default" role="button">创建房间</a></div>
-            <div class="col-xs-6 col-sm-6 col-md-6 center">
-                <a id="join-game" class="btn btn-default" role="button">加入游戏</a>
-            </div>
-        </div>
-    </div>
-    <div id="join-game-screen" style="display: none">
-        <p>请输入房间号并点击加入</p>
-        <form class="form-inline" id="joinGameForm">
-            <div class="form-group">
-                <input type="text" class="form-control input-lg" placeholder="房间号" id="room-num">
-            </div>
-            <input type="submit" name="join" id="join" value="加入" class="btn btn-primary btn-lg">
-        </form>
-    </div>
-    <div id="enter_room" class="row center">
-        <div id="player_status" class="application_status">
-            <p>当前房间：<span>{{id}}号房间</span></p>
-            <table class="table table-condensed">
-                <tr class="info">
-                    <td>用户号码</td>
-                    <td>用户名</td>
-                    <td>用户状态</td>
+            <div class="row">
+              <div class="table_bg">
+              <table class="table table-condensed tableset">
+                <tr v-for="(char,key) in characters" >
+                  <td class="vert-align">{{ key }}</td>
+                  <td class="vert-align">{{ char.c_status }}</td>
+                  <td>
+                    <button class="sitbutton" v-on:click="sit( key )"></button>
+                  </td>
                 </tr>
                 <tr v-for="(char,key) in characters">
-                    <td>{{ key }}</td>
-                    <td>{{ char.c_status }}</td>
-                    <td>
-                        <button v-on:click="sit( key )">Sit</button>
-                    </td>
+                  <td class="vert-align">{{ key }}</td>
+                  <td class="vert-align">{{ char.c_status }}</td>
+                  <td>
+                    <button class="sitbutton" v-on:click="sit( key )"></button>
+                  </td>
                 </tr>
-            </table>
+              </table>
+            </div>
+            </div>
+
             <a v-on:click="startGame" id="start_game"
-               v-show="(typeof _.findKey(characters, function(o) { return o.c_status == 'awaiting'; }) == 'undefined')&&isOwner"
-               class="btn btn-default button_position" role="button" style="display: none">开始游戏</a>
-
+            v-show="(typeof _.findKey(characters, function(o) { return o.c_status == 'awaiting'; }) == 'undefined')&&isOwner"
+            class="btn btn-default button_position startgamebutton" role="button" style="display: none">开始游戏</a>
+          </div>
         </div>
-
-    </div>
-    <!-- 整体流程部分，先从确认身份，黑夜，守卫，狼人，女巫，预言家 -->
-    <div id="panda_process">
-        <!-- 确认身份 -->
-        <div id="identify" class="identify_scene">
+        <!-- 整体流程部分，先从确认身份，黑夜，守卫，狼人，女巫，预言家 -->
+        <div id="panda_process">
+          <!-- 确认身份 -->
+          <div id="identify" class="identify_scene">
             <div class="row">
-                <div class="col-xs-4 col-sm-6 col-md-4 center">
+              <div class="col-xs-4 col-sm-6 col-md-4 center">
+              </div>
+              <div class="col-xs-4 col-sm-6 col-md-4 center">
+                <div class="thumbnail">
+                  <img class="center_top" :src="'images/'+c_name+'.png'" style="display: block;">
+                  <div class="caption"><span>{{c_caption}}</span>
+                  </div>
                 </div>
-                <div class="col-xs-4 col-sm-6 col-md-4 center">
-                    <div class="thumbnail">
-                        <img class="center_top" :src="'images/'+c_name+'.png'" style="display: block;">
-                        <div class="caption"><span>{{c_caption}}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-4 col-sm-6 col-md-4 center">
-                </div>
+              </div>
+              <div class="col-xs-4 col-sm-6 col-md-4 center">
+              </div>
             </div>
             <div class="row center">
-                <a v-on:click="confirmIdentity" id="identify_button" class="btn btn-default" role="button">确认身份</a>
+              <a v-on:click="confirmIdentity" id="identify_button" class="btn btn-default" role="button">确认身份</a>
             </div>
-        </div>
-        <!-- 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 -->
-        <div id="night" class = "night">
+          </div>
+          <!-- 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 -->
+          <div id="night" class = "night">
             <img class="back_img" src="images/background1.png"/>
-        </div>
-        <div id="room-info-panel" class="player_name" style="display: none"><p>{{room.name}}</p>
+          </div>
+          <div id="room-info-panel" class="player_name" style="display: none"><p>{{room.name}}</p>
             <div id="confirmedPlayers">
-                <ul>
-                    <li
-                            is="confirmedPlayer-item"
-                            v-for="(player, index) in confirmedPlayers"
-                            v-bind:player="player"
-                    ></li>
-                    号玩家已经确认
-                </ul>
-                <a v-on:click="startFirstNight" id="start-first-night"
-                   v-show="confirmedPlayers.length==_.size(room.characters)&&isOwner"
-                   class="btn btn-default button_position" role="button">天黑了</a></div>
-        </div>
-        <!--&lt;!&ndash; 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 &ndash;&gt;-->
+              <ul>
+                <li
+                is="confirmedPlayer-item"
+                v-for="(player, index) in confirmedPlayers"
+                v-bind:player="player"
+                ></li>
+                号玩家已经确认
+              </ul>
+              <a v-on:click="startFirstNight" id="start-first-night"
+              v-show="confirmedPlayers.length==_.size(room.characters)&&isOwner"
+              class="btn btn-default button_position" role="button">天黑了</a></div>
+            </div>
+            <!--&lt;!&ndash; 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 &ndash;&gt;-->
 
-
-        <!-- 守卫操作 -->
-        <div id="guard" class="row center_top">
+          </div>
+          <!-- 守卫操作 -->
+          <div id="guard" class="row center_top">
             <div class="row">
-                <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
-                    <div class="pos_box thumbnail">
-                        <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                        <div class="caption">
-                            <div class="row center_top">
-                                <div class="center">
-                                    <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
-                                    <br>
-                                    <a :id="'guardbutton'+key" v-on:click="guard(key)"
-                                       class="btn btn-default guard_button" role="button">守卫</a>
-                                </div>
-                            </div>
-                        </div>
+              <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
+                <div class="pos_box thumbnail">
+                  <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                  <div class="caption">
+                    <div class="row center_top">
+                      <div class="center">
+                        <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
+                        <br>
+                        <a :id="'guardbutton'+key" v-on:click="guard(key)"
+                        class="btn btn-default guard_button" role="button">守卫</a>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
             <div class="row button_position">
-                <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                    <a v-on:click="guard_restart" class="btn btn-default" role="button">重置</a>
-                </div>
-                <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                    <a id="guard_confirm" class="btn btn-default" role="button">确定</a>
-                </div>
+              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+                <a v-on:click="guard_restart" class="btn btn-default" role="button">重置</a>
+              </div>
+              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+                <a id="guard_confirm" class="btn btn-default" role="button">确定</a>
+              </div>
             </div>
-        </div>
-        <!--&lt;!&ndash; 守卫操作完，等5秒钟的时间，播放声音，狼人请睁眼 &ndash;&gt;-->
-        <div id="wolf" class="row center_top">
+          </div>
+          <!--&lt;!&ndash; 守卫操作完，等5秒钟的时间，播放声音，狼人请睁眼 &ndash;&gt;-->
+          <div id="wolf" class="row center_top">
             <p>狼人请统一意见后，共同按一个号码，若均确认后，击杀目标不同则被认为是平安夜</p>
             <div class="row">
-                <p v-for="choice in killChoices"><span v-for="wolf in choice.wolves">{{wolf.wolf}}号</span>希望杀害{{choice.target}}号
-                </p>
+              <p v-for="choice in killChoices"><span v-for="wolf in choice.wolves">{{wolf.wolf}}号</span>希望杀害{{choice.target}}号
+              </p>
             </div>
             <div class="row">
-                <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
-                    <div class="pos_box thumbnail">
-                        <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                        <div class="caption">
-                            <div class="row center_top">
-                                <div class="center">
-                                    <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
-                                    <br>
-                                    <a :id="'wolvesbutton'+key" v-on:click="wolves(key)"
-                                       class="btn btn-default wolves_button" role="button">杀害</a>
-                                </div>
-                            </div>
-                        </div>
+              <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
+                <div class="pos_box thumbnail">
+                  <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                  <div class="caption">
+                    <div class="row center_top">
+                      <div class="center">
+                        <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
+                        <br>
+                        <a :id="'wolvesbutton'+key" v-on:click="wolves(key)"
+                        class="btn btn-default wolves_button" role="button">杀害</a>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
             <p>最终决定<span v-if="killDecision == 0">今晚将是平安夜</span><span v-else>猎杀{{killDecision}}号</span></p>
             <div class="row button_position">
-                <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                    <a v-on:click="wolves_restart" class="btn btn-default" role="button">重置</a>
-                </div>
-                <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                    <a id="wolves_confirm" v-on:click="wolvesDecision" class="btn btn-default" role="button">确定</a>
-                </div>
+              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+                <a v-on:click="wolves_restart" class="btn btn-default" role="button">重置</a>
+              </div>
+              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+                <a id="wolves_confirm" v-on:click="wolvesDecision" class="btn btn-default" role="button">确定</a>
+              </div>
             </div>
-        </div>
-        <!--&lt;!&ndash; 狼人操作完，等5秒钟的时间，播放声音，预言家请睁眼 &ndash;&gt;-->
-        <div id="predictor" class="row center_top">
+          </div>
+          <!--&lt;!&ndash; 狼人操作完，等5秒钟的时间，播放声音，预言家请睁眼 &ndash;&gt;-->
+          <div id="predictor" class="row center_top">
             <div class="row">
-                <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
-                    <div class="pos_box thumbnail">
-                        <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                        <div class="caption">
-                            <div class="row center_top">
-                                <div class="center">
-                                    <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
-                                    <br>
-                                    <a :id="'predictorbutton'+key" v-on:click="predictorCheck(key)"
-                                       class="btn btn-default predictor_button" role="button">查验</a>
-                                </div>
-                            </div>
-                        </div>
+              <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
+                <div class="pos_box thumbnail">
+                  <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                  <div class="caption">
+                    <div class="row center_top">
+                      <div class="center">
+                        <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
+                        <br>
+                        <a :id="'predictorbutton'+key" v-on:click="predictorCheck(key)"
+                        class="btn btn-default predictor_button" role="button">查验</a>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
             <div class="row button_position">
-                <div class="center ">
-                    <a id="predictor_confirm" v-on:click="predictorConfirm" class="btn btn-default" role="button">确定</a>
-                </div>
+              <div class="center ">
+                <a id="predictor_confirm" v-on:click="predictorConfirm" class="btn btn-default" role="button">确定</a>
+              </div>
             </div>
-        </div>
-        <!--&lt;!&ndash; 预言家操作完，等5秒钟的时间，播放声音，女巫请睁眼 &ndash;&gt;-->
-        <div id="witch" class="row center_top">
+          </div>
+          <!--&lt;!&ndash; 预言家操作完，等5秒钟的时间，播放声音，女巫请睁眼 &ndash;&gt;-->
+          <div id="witch" class="row center_top">
             <p>Tips: 女巫一晚上最多只可以用一瓶药（解药／毒药），用完解药后无法看到死的人</p>
             <div class="row">
-                <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
-                    <div class="pos_box thumbnail">
-                        <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                        <div class="caption">
-                            <div class="row center_top">
-                                <div class="center">
-                                    <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
-                                    <br>
-                                    <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
-                                       class="btn btn-default witch_button" role="button">毒杀</a>
-                                </div>
-                            </div>
-                        </div>
+              <div v-for="(pos,key) in room.characters" class="col-xs-4 col-sm-6 col-md-4">
+                <div class="pos_box thumbnail">
+                  <img class="center_top" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                  <div class="caption">
+                    <div class="row center_top">
+                      <div class="center">
+                        <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p>
+                        <br>
+                        <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
+                        class="btn btn-default witch_button" role="button">毒杀</a>
+                      </div>
                     </div>
+                  </div>
                 </div>
+              </div>
             </div>
             <div class="row identify_scene">
-                <p v-if="room.lastKill==0">今夜无人死亡</p>
-                <p v-else>今夜死的玩家是 : <span>{{room.lastKill}}</span>号玩家</p>
-                <a v-on:click="witchSave" class="btn btn-default witch_button" role="button">救人</a>
+              <p v-if="room.lastKill==0">今夜无人死亡</p>
+              <p v-else>今夜死的玩家是 : <span>{{room.lastKill}}</span>号玩家</p>
+              <a v-on:click="witchSave" class="btn btn-default witch_button" role="button">救人</a>
             </div>
             <div class="row button_position">
-                <!--enter_room-->
-                <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                    <a v-on:click="witchConfirm" id="witchConfirm" class="btn btn-default" role="button">确定</a>
-                </div>
+              <!--enter_room-->
+              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+                <a v-on:click="witchConfirm" id="witchConfirm" class="btn btn-default" role="button">确定</a>
+              </div>
             </div>
+          </div>
+          <!-- 女巫操作完，等5秒钟的时间，播放声音，天亮了，请大家睁眼 -->
         </div>
-        <!-- 女巫操作完，等5秒钟的时间，播放声音，天亮了，请大家睁眼 -->
+      </div>
+
+      <div class = "footer row no_margin center">
+        <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+          <span>用户名：</span><span>大屁股</span>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+          <span>房间号：</span><span>大屁股</span>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+          <span>号码：</span><span>大屁股</span>
+        </div>
+      </div>
+
     </div>
-</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+  </body>
 
-<div class = "footer">
-  <a class="btn xiangshang_caidan" id="bottom_banner_button" role="button"></a>
-</div>
-
-</div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-</body>
-
-</html>
+  </html>

@@ -2,17 +2,20 @@
 //   event.preventDefault();
 // }
 $(document).ready(function () {
-  //test footer
+//确认
 
     var socket = io();
     $("#game-plaza-view").hide();
     $("#enter_room").hide();
-  //  $("#night").hide();
+    $("#night").hide();
     $("#guard").hide();
     $("#identify").hide();
     $("#wolf").hide();
     $("#predictor").hide();
     $("#witch").hide();
+    $(".footer").hide();
+
+
 
 
     var viewModels = ["witch","night","predictor","identify","wolf","guard","enter_room","game-plaza-view"]
@@ -103,10 +106,10 @@ $(document).ready(function () {
 
     var viewController =  new ViewController(viewModels)
 
-    var userInfoVm = new Vue({
-        el: '#user-info-panel',
-        data: player_info
-    })
+    // var userInfoVm = new Vue({
+    //     el: '#user-info-panel',
+    //     data: player_info
+    // })
 
     var man_kill = new Vue({
         el: '#panda_kill',
@@ -154,9 +157,15 @@ $(document).ready(function () {
                 //   toggleChatWindow();
                 //   $("#msg").focus();
                 // }
-                $("#first_view").hide();
-                $("#user-info-panel").show();
-                $("#game-plaza-view").show();
+                if(name != ""){
+                  $("#first_view").hide();
+                  $("body").css({'background-image':'url(../public/images/Secondpage.png)'});
+                  $(".footer").show();
+                  // $("#user-info-panel").show();
+                  $("#game-plaza-view").show();
+                }else{
+                  alert("请输入你的昵称");
+                }
             }
         }
     });
@@ -178,6 +187,7 @@ $(document).ready(function () {
         });
         console.log(characters);
         socket.emit("createRoom", characters);
+        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#enter_room").show();
 
@@ -188,6 +198,7 @@ $(document).ready(function () {
     });
     //加入已有游戏
     $("#join-game").click(function () {
+        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#join-game-screen").show();
     });
