@@ -371,10 +371,10 @@ body{
   width: 100%;
   height:100%;
 }
-#container{
+.player-box-container{
   position: relative;
 }
-#overlay_image{
+.overlay_image{
     position: absolute;
     bottom: 2%;
     right: 3%;
@@ -426,7 +426,7 @@ height: 40em;
   width: 12em;
 height: 5em;
 }
-#overlay_image{
+.overlay_image{
   position: absolute;
   bottom: 2%;
   right: 2%;

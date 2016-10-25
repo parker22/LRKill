@@ -275,13 +275,13 @@ $(document).ready(function () {
                     },
                     startGame: function () {
                         $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
+                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
                         $("#identify").show();
                         socket.emit("startGame");
                     },
                     initGame: function () {
                         $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
+                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
                         $("#identify").show();
                         kill_process = new Vue({
                             el: '#panda_process',
