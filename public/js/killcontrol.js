@@ -14,7 +14,7 @@ $(document).ready(function () {
     $("#predictor").hide();
     $("#witch").hide();
     $(".footer").hide();
-
+  //  $("#first_view").hide();
 
 
 
@@ -275,11 +275,13 @@ $(document).ready(function () {
                     },
                     startGame: function () {
                         $("#enter_room").hide();
+                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
                         $("#identify").show();
                         socket.emit("startGame");
                     },
                     initGame: function () {
                         $("#enter_room").hide();
+                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
                         $("#identify").show();
                         kill_process = new Vue({
                             el: '#panda_process',
