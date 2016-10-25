@@ -106,10 +106,10 @@ $(document).ready(function () {
 
     var viewController =  new ViewController(viewModels)
 
-    // var userInfoVm = new Vue({
-    //     el: '#user-info-panel',
-    //     data: player_info
-    // })
+    var userInfoVm = new Vue({
+        el: '#user-info-panel',
+        data: player_info
+    })
 
     var man_kill = new Vue({
         el: '#panda_kill',
@@ -159,9 +159,9 @@ $(document).ready(function () {
                 // }
                 if(name != ""){
                   $("#first_view").hide();
-                  $("body").css({'background-image':'url(../public/images/Secondpage.png)'});
+                  $("body").css({'background-image':'url(../images/Secondpage.png)'});
                   $(".footer").show();
-                  // $("#user-info-panel").show();
+                  $("#user-info-panel").show();
                   $("#game-plaza-view").show();
                 }else{
                   alert("请输入你的昵称");
@@ -187,7 +187,7 @@ $(document).ready(function () {
         });
         console.log(characters);
         socket.emit("createRoom", characters);
-        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
+        $("body").css({'background-image':'url(../images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#enter_room").show();
 
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
     //加入已有游戏
     $("#join-game").click(function () {
-        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
+        $("body").css({'background-image':'url(../images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#join-game-screen").show();
     });
