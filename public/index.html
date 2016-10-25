@@ -118,13 +118,6 @@
                     <button class="sitbutton" v-on:click="sit( key )"></button>
                   </td>
                 </tr>
-                <tr v-for="(char,key) in characters">
-                  <td class="vert-align">{{ key }}</td>
-                  <td class="vert-align">{{ char.c_status }}</td>
-                  <td>
-                    <button class="sitbutton" v-on:click="sit( key )"></button>
-                  </td>
-                </tr>
               </table>
             </div>
             </div>
@@ -175,7 +168,7 @@
             </div>
             <!--&lt;!&ndash; 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 &ndash;&gt;-->
 
-          </div>
+
           <!-- 守卫操作 -->
           <div id="guard" class="row center_top">
             <div class="row">
@@ -299,15 +292,15 @@
         </div>
       </div>
 
-      <div class = "footer row no_margin center">
+      <div id="user-info-panel" class = "footer row no_margin center"  style="display: none">
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>用户名：</span><span>大屁股</span>
+          <span>昵称：</span><span>{{name}}</span>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>房间号：</span><span>大屁股</span>
+          <span>房间号：</span><span v-if="inroom == null">未加入游戏</span><span v-else>{{inroom}}</span>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>号码：</span><span>大屁股</span>
+          <span>当前号码：</span><span v-if="seatNum == null">未落座</span><span v-else>{{seatNum}}</span>
         </div>
       </div>
 
