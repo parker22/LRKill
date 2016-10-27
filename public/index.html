@@ -24,6 +24,7 @@
   integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
   crossorigin="anonymous"></script>
   <script src="js/lodash.js"></script>
+  <script src="js/inobounce.min.js"></script>
   <script src="https://cdn.jsdelivr.net/vue/2.0.2/vue.js"></script>
   <script src="js/killcontrol.js"></script>
 
@@ -113,13 +114,6 @@
             <div class="row">
               <div class="table_bg">
               <table class="table table-condensed tableset">
-                <tr v-for="(char,key) in characters" >
-                  <td class="vert-align">{{ key }}</td>
-                  <td class="vert-align">{{ char.c_status }}</td>
-                  <td>
-                    <button class="sitbutton" v-on:click="sit( key )"></button>
-                  </td>
-                </tr>
                 <tr v-for="(char,key) in characters">
                   <td class="vert-align">{{ key }}</td>
                   <td class="vert-align">{{ char.c_status }}</td>
@@ -145,7 +139,7 @@
               <div class="col-xs-2 col-sm-2 col-md-2 center">
               </div>
               <div class="col-xs-8 col-sm-8 col-md-8 center no_padding">
-                <img src="../public/images/cardback.png" class = "identify_status">
+                <img src="../images/cardback.png" class = "identify_status">
               </div>
               <div class="col-xs-2 col-sm-2 col-md-2 center">
               </div>
@@ -326,15 +320,15 @@
         </div>
       </div>
 
-      <div class = "footer row no_margin center">
+    <div id="user-info-panel" class = "footer row no_margin center"  style="display: none">
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>用户名：</span><span>大屁股</span>
+          <span>昵称：</span><span>{{name}}</span>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>房间号：</span><span>大屁股</span>
+          <span>房间号：</span><span v-if="inroom == null">未加入游戏</span><span v-else>{{inroom}}</span>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>号码：</span><span>大屁股</span>
+          <span>当前号码：</span><span v-if="seatNum == null">未落座</span><span v-else>{{seatNum}}</span>
         </div>
       </div>
 

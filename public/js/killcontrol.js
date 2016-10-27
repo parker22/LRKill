@@ -106,10 +106,10 @@ $(document).ready(function () {
 
     var viewController =  new ViewController(viewModels)
 
-    // var userInfoVm = new Vue({
-    //     el: '#user-info-panel',
-    //     data: player_info
-    // })
+    var userInfoVm = new Vue({
+        el: '#user-info-panel',
+        data: player_info
+    })
 
     var man_kill = new Vue({
         el: '#panda_kill',
@@ -159,9 +159,9 @@ $(document).ready(function () {
                 // }
                 if(name != ""){
                   $("#first_view").hide();
-                  $("body").css({'background-image':'url(../public/images/Secondpage.png)'});
+                  $("body").css({'background-image':'url(../images/Secondpage.png)'});
                   $(".footer").show();
-                  // $("#user-info-panel").show();
+                  $("#user-info-panel").show();
                   $("#game-plaza-view").show();
                 }else{
                   alert("请输入你的昵称");
@@ -187,7 +187,7 @@ $(document).ready(function () {
         });
         console.log(characters);
         socket.emit("createRoom", characters);
-        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
+        $("body").css({'background-image':'url(../images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#enter_room").show();
 
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
     //加入已有游戏
     $("#join-game").click(function () {
-        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
+        $("body").css({'background-image':'url(../images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#join-game-screen").show();
     });
@@ -276,13 +276,13 @@ $(document).ready(function () {
                     },
                     startGame: function () {
                         $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
-                        $("#identify").show();
+                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
+                        // $("#identify").show();
                         socket.emit("startGame");
                     },
                     initGame: function () {
                         $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
+                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
                         $("#identify").show();
                         kill_process = new Vue({
                             el: '#panda_process',
@@ -314,8 +314,7 @@ $(document).ready(function () {
                                     console.log("守卫" + index)
                                     socket.emit("action", {action: "guard", detail: parseInt(index)});
                                     $(".guard_button").addClass("disabled");
-                                    var num = index + 1;
-                                    $("#guardhint" + num).show();
+                                    $("#guardhint" + index).show();
                                     // $("#guardbutton" + num).parents(".pos_box").css({"background-color": "green"});
                                     setTimeout(function () {
                                         $("#guard").hide();
@@ -334,8 +333,7 @@ $(document).ready(function () {
                                 wolves: function (index) {
                                     console.log("想杀害" + index)
                                     $(".wolves_button").addClass("disabled");
-                                    var num = index + 1;
-                                    $("#wolveshint" + num).show();
+                                    $("#wolveshint" + index).show();
                                     socket.emit("action", {action: "killChoice", detail: index});
                                 },
                                 wolvesDecision: function () {
@@ -383,8 +381,7 @@ $(document).ready(function () {
                                 },
                                 witchPoison: function (index) {
                                     $(".witch_button").addClass("disabled");
-                                    var num = index + 1;
-                                    $("#witchhint" + num).show();
+                                    $("#witchhint" + index).show();
                                     socket.emit("action", {action: "witchPoison", detail: parseInt(index)});
                                 },
                                 witchConfirm: function (index) {
