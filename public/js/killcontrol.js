@@ -12,9 +12,9 @@ $(document).ready(function () {
     $("#identify").hide();
     $("#wolf").hide();
     $("#predictor").hide();
-    $("#witch").hide();
+     $("#witch").hide();
     $(".footer").hide();
-  //  $("#first_view").hide();
+//    $("#first_view").hide();
 
 
 
@@ -106,10 +106,10 @@ $(document).ready(function () {
 
     var viewController =  new ViewController(viewModels)
 
-    var userInfoVm = new Vue({
-        el: '#user-info-panel',
-        data: player_info
-    })
+    // var userInfoVm = new Vue({
+    //     el: '#user-info-panel',
+    //     data: player_info
+    // })
 
     var man_kill = new Vue({
         el: '#panda_kill',
@@ -159,9 +159,9 @@ $(document).ready(function () {
                 // }
                 if(name != ""){
                   $("#first_view").hide();
-                  $("body").css({'background-image':'url(../images/Secondpage.png)'});
+                  $("body").css({'background-image':'url(../public/images/Secondpage.png)'});
                   $(".footer").show();
-                  $("#user-info-panel").show();
+                  // $("#user-info-panel").show();
                   $("#game-plaza-view").show();
                 }else{
                   alert("请输入你的昵称");
@@ -187,7 +187,7 @@ $(document).ready(function () {
         });
         console.log(characters);
         socket.emit("createRoom", characters);
-        $("body").css({'background-image':'url(../images/Thirdpage1.png)'});
+        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#enter_room").show();
 
@@ -198,7 +198,7 @@ $(document).ready(function () {
     });
     //加入已有游戏
     $("#join-game").click(function () {
-        $("body").css({'background-image':'url(../images/Thirdpage1.png)'});
+        $("body").css({'background-image':'url(../public/images/Thirdpage1.png)'});
         $("#game-plaza-view").hide();
         $("#join-game-screen").show();
     });
@@ -215,6 +215,7 @@ $(document).ready(function () {
 
         }
     });
+
 
     //创建游戏,需要人满开始button才能够被点击
     // if(){
@@ -275,13 +276,13 @@ $(document).ready(function () {
                     },
                     startGame: function () {
                         $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
+                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
                         $("#identify").show();
                         socket.emit("startGame");
                     },
                     initGame: function () {
                         $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
+                        $("body").css({'background-image':'url(../public/images/Fourthpage.png)'});
                         $("#identify").show();
                         kill_process = new Vue({
                             el: '#panda_process',
@@ -314,14 +315,15 @@ $(document).ready(function () {
                                     socket.emit("action", {action: "guard", detail: parseInt(index)});
                                     $(".guard_button").addClass("disabled");
                                     var num = index + 1;
-                                    $("#guardbutton" + num).parents(".pos_box").css({"background-color": "green"});
+                                    $("#guardhint" + num).show();
+                                    // $("#guardbutton" + num).parents(".pos_box").css({"background-color": "green"});
                                     setTimeout(function () {
                                         $("#guard").hide();
                                     }, 2000);
                                 },
                                 guard_restart: function () {
                                     $(".guard_button").removeClass("disabled");
-                                    $(".guard_button").parents("#pos_id").css({"background-color": "white"});
+                                    $(".overlay_image").hide();
                                     for (var i = 0; i < allPlayerInfo.position.length; i++) {
                                         if (allPlayerInfo.position[i].isGuard == true) {
                                             allPlayerInfo.position[i].isGuard == false;
@@ -331,6 +333,9 @@ $(document).ready(function () {
                                 // //狼人的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 wolves: function (index) {
                                     console.log("想杀害" + index)
+                                    $(".wolves_button").addClass("disabled");
+                                    var num = index + 1;
+                                    $("#wolveshint" + num).show();
                                     socket.emit("action", {action: "killChoice", detail: index});
                                 },
                                 wolvesDecision: function () {
@@ -339,7 +344,8 @@ $(document).ready(function () {
                                 },
                                 wolves_restart: function () {
                                     $(".wolves_button").removeClass("disabled");
-                                    $(".wolves_button").parents("#pos_id").css({"background-color": "white"});
+                                    $(".overlay_image").hide();
+                                    // $(".wolves_button").parents("#pos_id").css({"background-color": "white"});
                                     for (var i = 0; i < allPlayerInfo.position.length; i++) {
                                         if (allPlayerInfo.position[i].isKill == allPlayerInfo.round) {
                                             allPlayerInfo.position[i].isKill == 0;
@@ -350,8 +356,9 @@ $(document).ready(function () {
                                 // //预言家的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 predictorCheck: function (index) {
                                     $(".predictor_button").addClass("disabled");
-
-                                    $("#predictorbutton" + index).parents(".pos_box").css({"background-color": "green"});
+                                    var num = index + 1;
+                                    $("#predictorhint" + num).show();
+                                    // $("#predictorbutton" + index).parents(".pos_box").css({"background-color": "green"});
                                     var idnt = this.room.characters[index].c_name;
                                     if (idnt == "wolf") {
                                         alert("他是坏人");
@@ -376,6 +383,8 @@ $(document).ready(function () {
                                 },
                                 witchPoison: function (index) {
                                     $(".witch_button").addClass("disabled");
+                                    var num = index + 1;
+                                    $("#witchhint" + num).show();
                                     socket.emit("action", {action: "witchPoison", detail: parseInt(index)});
                                 },
                                 witchConfirm: function (index) {

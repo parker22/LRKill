@@ -32,9 +32,8 @@
 <body>
   <div id="main">
     <div class="container-fluid">
-
-      <div id="first_view" class="center">
-        <div id="player_n" class="player_input">
+      <div id="first_view" class="center no_padding">
+        <div id="player_n" class="player_input ">
           <div class="row">
             <div class="col-xs-2 col-sm-2 col-md-2">
             </div>
@@ -121,6 +120,13 @@
                     <button class="sitbutton" v-on:click="sit( key )"></button>
                   </td>
                 </tr>
+                <tr v-for="(char,key) in characters">
+                  <td class="vert-align">{{ key }}</td>
+                  <td class="vert-align">{{ char.c_status }}</td>
+                  <td>
+                    <button class="sitbutton" v-on:click="sit( key )"></button>
+                  </td>
+                </tr>
               </table>
             </div>
             </div>
@@ -132,7 +138,6 @@
         </div>
         <!-- 整体流程部分，先从确认身份，黑夜，守卫，狼人，女巫，预言家 -->
 
-
         <div id="panda_process">
           <!-- 确认身份 -->
           <div id="identify" class="identify_scene">
@@ -140,7 +145,7 @@
               <div class="col-xs-2 col-sm-2 col-md-2 center">
               </div>
               <div class="col-xs-8 col-sm-8 col-md-8 center no_padding">
-                <img src="../images/cardback.png" class = "identify_status">
+                <img src="../public/images/cardback.png" class = "identify_status">
               </div>
               <div class="col-xs-2 col-sm-2 col-md-2 center">
               </div>
@@ -155,7 +160,7 @@
           <div id="night" class = "night">
             <img class="back_img" src="images/night.png"/>
           </div>
-          <div id="room-info-panel" class="player_name" style="display: none"><p>{{room.name}}</p>
+          <div id="room-info-panel" class="player_name center_top" style="display: none"><p>{{room.name}}</p>
             <div id="confirmedPlayers">
               <ul>
                 <li
@@ -167,18 +172,22 @@
               </ul>
               <a v-on:click="startFirstNight" id="start-first-night"
               v-show="confirmedPlayers.length==_.size(room.characters)&&isOwner"
-              class="btn btn-default button_position" role="button">天黑了</a></div>
+              class="btn button_position tianheile" role="button"></a></div>
             </div>
             <!--&lt;!&ndash; 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 &ndash;&gt;-->
 
           <!-- 守卫操作 -->
+
           <div id="guard" class="row process_top">
             <div class="row">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
-                  <div class ="player-box-container">
-                    <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                     <div class="overlay_image"></div>
+                  <div class ="container_num">
+                    <a :id="'guardbutton'+key" v-on:click="guard(key)"
+                    class="btn guard_button" role="button">
+                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    </a>
+                    <div :id = "'guardhint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
                   <div class="caption caption_change">
                     <div class="row center">
@@ -215,9 +224,12 @@
             <div class="row">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
-                  <div class ="player-box-container">
-                    <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                    <div class="overlay_image"></div>
+                  <div class ="container_num">
+                    <a :id="'wolvesbutton'+key" v-on:click="wolves(key)"
+                    class="btn wolves_button" role="button">
+                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    </a>
+                    <div :id= "'wolveshint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
                   <div class="caption caption_change">
                     <div class="row center_top">
@@ -233,10 +245,10 @@
             <p>最终决定<span v-if="killDecision == 0">今晚将是平安夜</span><span v-else>猎杀{{killDecision}}号</span></p>
             <div class="row button_position">
               <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                <a v-on:click="wolves_restart" class="btn reset" role="button">重置</a>
+                <a v-on:click="wolves_restart" class="btn reset" role="button"></a>
               </div>
               <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                <a id="wolves_confirm" v-on:click="wolvesDecision" class="btn forsure" role="button">确定</a>
+                <a id="wolves_confirm" v-on:click="wolvesDecision" class="btn forsure" role="button"></a>
               </div>
             </div>
           </div>
@@ -246,9 +258,12 @@
             <div class="row">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
-                  <div class="player-box-container">
-                    <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                    <div class="overlay_image"></div>
+                  <div class ="container_num">
+                    <a :id="'predictorbutton'+key" v-on:click="predictorCheck(key)"
+                    class="btn predictor_button" role="button">
+                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    </a>
+                    <div :id="'predictorhint'+key" class="overlay_image" style="display:none;"></div>
                   </div>
                   <div class="caption caption_change">
                     <div class="row center_top">
@@ -273,9 +288,12 @@
             <div class="row">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
-                  <div class ="player-box-container">
+                  <div class ="container_num">
+                    <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
+                    class="btn witch_button" role="button">
                     <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                    <div class="overlay_image"></div>
+                    </a>
+                    <div :id="'witchhint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
                   <div class="caption caption_change">
                     <div class="row center_top">
@@ -308,15 +326,15 @@
         </div>
       </div>
 
-      <div id="user-info-panel" class = "footer row no_margin center"  style="display: none">
+      <div class = "footer row no_margin center">
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>昵称：</span><span>{{name}}</span>
+          <span>用户名：</span><span>大屁股</span>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>房间号：</span><span v-if="inroom == null">未加入游戏</span><span v-else>{{inroom}}</span>
+          <span>房间号：</span><span>大屁股</span>
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
-          <span>当前号码：</span><span v-if="seatNum == null">未落座</span><span v-else>{{seatNum}}</span>
+          <span>号码：</span><span>大屁股</span>
         </div>
       </div>
 

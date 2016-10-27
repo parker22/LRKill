@@ -181,12 +181,11 @@ io.sockets.on("connection", function (socket) {
                 chars[i + 1] = {"c_name": characters[i], "c_status": "awaiting", "c_uid": null};
             }
             room.setCharacters(chars);
-            room.step="enter_room"
+
             io.to(socket.room).emit("update-room-status", rooms[id]);
             socket.emit("update-user-status", people[uid]);
             socket.emit("sendRoomID", {id: id});
             // chatHistory[socket.room] = [];
-
         } else {
             socket.emit("update", "You have already created a room.");
         }
@@ -473,7 +472,7 @@ io.sockets.on("connection", function (socket) {
             else if (!_.has(rooms, id)) {
                 socket.emit("update", "房间已过期或号码有误，请重试");
             }
-            else if (_.size(room.characters) <= room.people.length) {
+            else if (_.size(rooms.characters) <= rooms.person.length) {
                 socket.emit("update", "房间已满");
             }
             else {
