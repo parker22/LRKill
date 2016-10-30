@@ -399,7 +399,7 @@ io.sockets.on("connection", function (socket) {
                 wolf: parseInt(user.seatNum)
             });
             if (killerIdx != -1) {
-                room.killChoices.splice(killerIdx, 1)
+                room.killChoices.splice(killerIdx, 1) 
             }
             room.killChoices.push({wolf: parseInt(user.seatNum), target: parseInt(targetNum)})
 

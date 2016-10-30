@@ -12,11 +12,9 @@ $(document).ready(function () {
     $("#identify").hide();
     $("#wolf").hide();
     $("#predictor").hide();
-     $("#witch").hide();
+    $("#witch").hide();
     $(".footer").hide();
-//    $("#first_view").hide();
-
-
+    // $("#first_view").hide();
 
     var viewModels = ["witch","night","predictor","identify","wolf","guard","enter_room","game-plaza-view"]
     function playAudios(audioList) {
@@ -298,7 +296,6 @@ $(document).ready(function () {
                                     $("#room-info-panel").show();
                                 },
                                 startFirstNight: function () {
-
                                     socket.emit("startFirstNight");
 
                                 },
@@ -311,14 +308,12 @@ $(document).ready(function () {
                                 // }
                                 // //守卫的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 guard: function (index) {
-                                    console.log("守卫" + index)
-                                    socket.emit("action", {action: "guard", detail: parseInt(index)});
-                                    $(".guard_button").addClass("disabled");
+                                    console.log("想守卫" + index)
+                                    //socket.emit("action", {action: "guard", detail: parseInt(index)});
+                                    $(".overlay_image").hide();
                                     $("#guardhint" + index).show();
                                     // $("#guardbutton" + num).parents(".pos_box").css({"background-color": "green"});
-                                    setTimeout(function () {
-                                        $("#guard").hide();
-                                    }, 2000);
+
                                 },
                                 guard_restart: function () {
                                     $(".guard_button").removeClass("disabled");
@@ -329,10 +324,18 @@ $(document).ready(function () {
                                         }
                                     }
                                 },
+                                guardConfirm: function (index) {
+                                  console.log("确定守卫" + index)
+                                  socket.emit("action", {action: "guard", detail: parseInt(index)});
+                                  setTimeout(function () {
+                                      $("#guard").hide();
+                                  }, 2000);
+                                },
                                 // //狼人的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 wolves: function (index) {
                                     console.log("想杀害" + index)
-                                    $(".wolves_button").addClass("disabled");
+                                    // $(".wolves_button").addClass("disabled");
+                                    $(".overlay_image").hide();
                                     $("#wolveshint" + index).show();
                                     socket.emit("action", {action: "killChoice", detail: index});
                                 },
@@ -354,8 +357,7 @@ $(document).ready(function () {
                                 // //预言家的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 predictorCheck: function (index) {
                                     $(".predictor_button").addClass("disabled");
-                                    var num = index + 1;
-                                    $("#predictorhint" + num).show();
+                                    $("#predictorhint" + index).show();
                                     // $("#predictorbutton" + index).parents(".pos_box").css({"background-color": "green"});
                                     var idnt = this.room.characters[index].c_name;
                                     if (idnt == "wolf") {
@@ -376,13 +378,18 @@ $(document).ready(function () {
                                 //     allPlayerInfo.position[index].isPosin = allPlayerInfo.round;
                                 // },
                                 witchSave: function () {
-                                    $(".witch_button").addClass("disabled");
+
+                                    $(".witch_save").addClass("disabled");
                                     socket.emit("action", {action: "witchSave", detail: null});
                                 },
                                 witchPoison: function (index) {
-                                    $(".witch_button").addClass("disabled");
+                                    $(".overlay_image").hide();
                                     $("#witchhint" + index).show();
                                     socket.emit("action", {action: "witchPoison", detail: parseInt(index)});
+                                },
+                                //没写使用毒药按键的方法，逻辑是先点上面的号码，再点使用毒药，然后再点确认进入下一个界面
+                                witchPoisonComfirmation: function(index){
+                                  $(".witch_posion").addClass("disabled");
                                 },
                                 witchConfirm: function (index) {
                                     socket.emit("action", {action: "witch", detail: null});
@@ -485,7 +492,8 @@ $(document).ready(function () {
                 $('#witch').hide()
                 if (step == "night") {
                     console.log("天黑了")
-                    $("#confirmedPlayers").hide();
+                    $("#room-info-panel").hide();
+                    $('#confirmedPlayers').hide();
                     $("#night").show();
                 }
                 else if (step == "guard") {
@@ -522,6 +530,7 @@ $(document).ready(function () {
                 }
                 else if (step == "day") {
                     console.log("天亮了")
+                    $("#room-info-panel").show();
                     setTimeout("$('#night').hide()", 500);
 
                 }

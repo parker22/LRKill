@@ -33,15 +33,15 @@
 <body>
   <div id="main">
     <div class="container-fluid">
-      <div id="first_view" class="center no_padding">
+      <div id="first_view" class="center">
         <div id="player_n" class="player_input ">
-          <div class="row">
-            <div class="col-xs-2 col-sm-2 col-md-2">
+          <div class="row ">
+            <div class="col-xs-1 col-sm-1 col-md-1">
             </div>
-            <div class="col-xs-8 col-sm-8 col-md-8 input_name">
+            <div class="col-xs-10 col-sm-10 col-md-10 input_name ">
               <input id="player_name_input" class = "input_back" type="text" placeholder="输入你的昵称">
             </div>
-            <div class="col-xs-2 col-sm-2 col-md-2">
+            <div class="col-xs-1 col-sm-1 col-md-1">
             </div>
           </div>
           <div class ="row">
@@ -149,13 +149,29 @@
             </div>
           </div>
 
-
           <!-- 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 -->
           <div id="night" class = "night">
             <img class="back_img" src="images/night.png"/>
           </div>
-          <div id="room-info-panel" class="player_name center_top" style="display: none"><p>{{room.name}}</p>
-            <div id="confirmedPlayers">
+          <div id="room-info-panel" class="player_name center_top" style="display: none">
+            <!-- <p>{{room.name}}</p>   -->
+            <div id="room-opera" class = "btn-group room_operation">
+              <button type="button" class="btn btn-default">{{room.name}}</button>
+              <button type="button" class="btn btn-default dropdown-toggle"
+                  data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">切换下拉菜单</span>
+              </button>
+              <ul class="dropdown-menu drop_info" role="menu">
+                <li><a type="button" class = "btn btn-default">重新开始</a></li>
+                <li><a type="button" class = "btn btn-default disabled">狼人自爆</a></li>
+                <li><a type="button" class = "btn btn-default disabled">警长投票</a></li>
+                <!-- <li class="divider"></li> -->
+                <li><a type="button" class = "btn btn-default disabled">公投投票</a></li>
+              </ul>
+            </div>
+
+            <div id="confirmedPlayers" class = "confirmed_Players">
               <ul>
                 <li
                 is="confirmedPlayer-item"
@@ -166,27 +182,28 @@
               </ul>
               <a v-on:click="startFirstNight" id="start-first-night"
               v-show="confirmedPlayers.length==_.size(room.characters)&&isOwner"
-              class="btn button_position tianheile" role="button"></a></div>
+              class="btn button_position tianheile" role="button"></a>
             </div>
+          </div>
             <!--&lt;!&ndash; 屏幕黑了，开始放声音，天黑请闭眼守卫请睁眼 &ndash;&gt;-->
 
           <!-- 守卫操作 -->
 
           <div id="guard" class="row process_top">
-            <div class="row">
+            <div class="row no_margin">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
                   <div class ="container_num">
                     <a :id="'guardbutton'+key" v-on:click="guard(key)"
-                    class="btn guard_button" role="button">
-                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    class="btn guard_button delete_padding" role="button">
+                      <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id = "'guardhint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
                   <div class="caption caption_change">
                     <div class="row center">
                         <!-- <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p> -->
-                        <p>{{pos.c_status}}></p>
+                        <p>{{pos.c_status}}</p>
                         <!-- <a :id="'guardbutton'+key" v-on:click="guard(key)"
                         class="btn btn-default guard_button" role="button">守卫</a> -->
                     </div>
@@ -199,12 +216,12 @@
               <p>并且不能连续两晚守护同一个人</p>
             </div>
             <div class="row button_position">
-              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+              <!-- <div class="col-xs-6 col-sm-6 col-md-6 center ">
                 <a v-on:click="guard_restart" class="btn reset" role="button"></a>
               </div>
-              <div class="col-xs-6 col-sm-6 col-md-6 center ">
-                <a id="guard_confirm" class="btn forsure" role="button"></a>
-              </div>
+              <div class="col-xs-6 col-sm-6 col-md-6 center "> -->
+                <a id="guard_confirm" v-on:click="guardConfirm" class="btn forsure" role="button"></a>
+              <!-- </div> -->
             </div>
           </div>
 
@@ -215,13 +232,13 @@
             <div class="row">
               <p v-for="choice in killChoices"><span v-for="wolf in choice.wolves">{{wolf.wolf}}号</span>希望杀害{{choice.target}}号</p>
             </div>
-            <div class="row">
+            <div class="row no_margin">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
                   <div class ="container_num">
                     <a :id="'wolvesbutton'+key" v-on:click="wolves(key)"
-                    class="btn wolves_button" role="button">
-                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    class="btn wolves_button delete_padding" role="button">
+                      <img class="center_top img_change " :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id= "'wolveshint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
@@ -238,24 +255,24 @@
             </div>
             <p>最终决定<span v-if="killDecision == 0">今晚将是平安夜</span><span v-else>猎杀{{killDecision}}号</span></p>
             <div class="row button_position">
-              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+              <!-- <div class="col-xs-6 col-sm-6 col-md-6 center ">
                 <a v-on:click="wolves_restart" class="btn reset" role="button"></a>
-              </div>
-              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+              </div> -->
+              <!-- <div class="col-xs-6 col-sm-6 col-md-6 center "> -->
                 <a id="wolves_confirm" v-on:click="wolvesDecision" class="btn forsure" role="button"></a>
-              </div>
+              <!-- </div> -->
             </div>
           </div>
 
           <!--&lt;!&ndash; 狼人操作完，等5秒钟的时间，播放声音，预言家请睁眼 &ndash;&gt;-->
           <div id="predictor" class="row process_top">
-            <div class="row">
+            <div class="row no_margin">
               <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
                 <div class="pos_box thumbnail thumbnail_change">
                   <div class ="container_num">
                     <a :id="'predictorbutton'+key" v-on:click="predictorCheck(key)"
-                    class="btn predictor_button" role="button">
-                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    class="btn predictor_button delete_padding" role="button">
+                      <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id="'predictorhint'+key" class="overlay_image" style="display:none;"></div>
                   </div>
@@ -272,62 +289,77 @@
             </div>
             <div class="row button_position">
               <div class="center ">
-                <a id="predictor_confirm" v-on:click="predictorConfirm" class="btn forsure" role="button">确定</a>
+                <a id="predictor_confirm" v-on:click="predictorConfirm" class="btn forsure" role="button"></a>
               </div>
             </div>
           </div>
+
           <!--&lt;!&ndash; 预言家操作完，等5秒钟的时间，播放声音，女巫请睁眼 &ndash;&gt;-->
           <div id="witch" class="row process_top">
             <p>Tips: 女巫一晚上最多只可以用一瓶药（解药／毒药），用完解药后无法看到死的人</p>
-            <div class="row">
-              <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3">
-                <div class="pos_box thumbnail thumbnail_change">
-                  <div class ="container_num">
-                    <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
-                    class="btn witch_button" role="button">
-                    <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
-                    </a>
-                    <div :id="'witchhint'+key" class="overlay_image" style="display: none;"></div>
-                  </div>
-                  <div class="caption caption_change">
-                    <div class="row center_top">
-                        <p>{{pos.c_status}}</p>
-                        <!-- <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p> -->
-                        <!-- <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
-                        class="btn btn-default witch_button" role="button">毒杀</a> -->
+            <div id = "usedrug" class="row witch_scene">
+              <div class = "witchsavemedicine">
+                <p>解药已用</p>
+                <p v-if="room.lastKill==0">今夜无人死亡</p>
+                <p v-else>今夜死的玩家是 : <span>{{room.lastKill}}</span>号玩家</p>
+                <p>你可以选择使用解药</p>
+                <a v-on:click="witchSave" class="btn  witch_save" role="button"></a>
+              </div>
+            </div>
+            <div id = "posionuse" class="row no_margin center_top witchposionmedicine">
+              <p>毒药已用</p>
+              <div class = "row">
+                <div v-for="(pos,key) in room.characters" class="col-xs-3 col-sm-3 col-md-3 ">
+                  <div class="pos_box thumbnail thumbnail_change">
+                    <div class ="container_num">
+                      <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
+                      class="btn witch_button delete_padding" role="button">
+                        <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
+                      </a>
+                      <div :id="'witchhint'+key" class="overlay_image" style="display: none;"></div>
+                    </div>
+                    <div class="caption caption_change">
+                      <div class="row center_top">
+                          <p>{{pos.c_status}}</p>
+                          <!-- <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p> -->
+                          <!-- <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
+                          class="btn btn-default witch_button" role="button">毒杀</a> -->
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class = "row">
+                <a v-on:click="witchPoisonComfirmation" class="btn  witch_posion" role="button"></a>
+              </div>
+              <!-- </div> -->
             </div>
-            <div class="row witch_scene">
-              <p v-if="room.lastKill==0">今夜无人死亡</p>
-              <p v-else>今夜死的玩家是 : <span>{{room.lastKill}}</span>号玩家</p>
-              <p> 你可以选择救人，或者直接点击一个号码毒杀</p>
-              <a v-on:click="witchSave" class="btn btn-default witch_button" role="button">救人</a>
+            <div class = "row show_witchinfo">
+              <p>2号玩家被杀</p>
+              <p>3号玩家被毒杀</p>
             </div>
             <div class="row button_position">
-              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+              <!-- <div class="col-xs-6 col-sm-6 col-md-6 center ">
                 <a class="btn reset" role="button"></a>
-              </div>
+              </div> -->
               <!--enter_room-->
-              <div class="col-xs-6 col-sm-6 col-md-6 center ">
+              <!-- <div class="col-xs-6 col-sm-6 col-md-6 center "> -->
                 <a v-on:click="witchConfirm" id="witchConfirm" class="btn forsure" role="button"></a>
-              </div>
+              <!-- </div> -->
             </div>
           </div>
           <!-- 女巫操作完，等5秒钟的时间，播放声音，天亮了，请大家睁眼 -->
         </div>
       </div>
 
-    <div id="user-info-panel" class = "footer row no_margin center"  style="display: none">
-        <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+    <div id="user-info-panel" class = "footer row  center"  style="display: none">
+        <div class="col-xs-4 col-sm-4 col-md-4 footer_font">
           <span>昵称：</span><span>{{name}}</span>
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+        <div class="col-xs-4 col-sm-4 col-md-4 footer_font">
           <span>房间号：</span><span v-if="inroom == null">未加入游戏</span><span v-else>{{inroom}}</span>
         </div>
-        <div class="col-xs-4 col-sm-4 col-md-4 no_padding">
+        <div class="col-xs-4 col-sm-4 col-md-4 footer_font">
           <span>当前号码：</span><span v-if="seatNum == null">未落座</span><span v-else>{{seatNum}}</span>
         </div>
       </div>
