@@ -286,6 +286,9 @@ $(document).ready(function () {
                             el: '#panda_process',
                             data: {
                                 room: roomInfo,
+                                guardObj:0,
+                                poisonObj:0,
+
 
                             },
                             methods: {
@@ -312,6 +315,7 @@ $(document).ready(function () {
                                     //socket.emit("action", {action: "guard", detail: parseInt(index)});
                                     $(".overlay_image").hide();
                                     $("#guardhint" + index).show();
+                                    this.guardObj = parseInt(index);
                                     // $("#guardbutton" + num).parents(".pos_box").css({"background-color": "green"});
 
                                 },
@@ -324,9 +328,9 @@ $(document).ready(function () {
                                         }
                                     }
                                 },
-                                guardConfirm: function (index) {
-                                  console.log("确定守卫" + index)
-                                  socket.emit("action", {action: "guard", detail: parseInt(index)});
+                                guardConfirm: function () {
+                                  console.log("确定守卫" + this.guardObj)
+                                  socket.emit("action", {action: "guard", detail: this.guardObj});
                                   setTimeout(function () {
                                       $("#guard").hide();
                                   }, 2000);
@@ -385,13 +389,15 @@ $(document).ready(function () {
                                 witchPoison: function (index) {
                                     $(".overlay_image").hide();
                                     $("#witchhint" + index).show();
-                                    socket.emit("action", {action: "witchPoison", detail: parseInt(index)});
+                                    this.poisonObj = parseInt(index);
                                 },
                                 //没写使用毒药按键的方法，逻辑是先点上面的号码，再点使用毒药，然后再点确认进入下一个界面
-                                witchPoisonComfirmation: function(index){
-                                  $(".witch_posion").addClass("disabled");
+                                witchPoisonComfirmation: function(){
+                                    socket.emit("action", {action: "witchPoison", detail: this.poisonObj });
+
+                                    $(".witch_posion").addClass("disabled");
                                 },
-                                witchConfirm: function (index) {
+                                witchConfirm: function () {
                                     socket.emit("action", {action: "witch", detail: null});
                                 },
                                 // witch_restart: function () {

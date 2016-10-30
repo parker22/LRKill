@@ -288,6 +288,7 @@ io.sockets.on("connection", function (socket) {
         var thisAction = actionData.action;
         if (thisAction == "guard") {
             room.lastGuard = actionData.detail
+            console.log("lastguard",room.lastGuard)
             goNextStep = !goNextStep
         }
         else if (thisAction == "killChoice") {
@@ -356,7 +357,7 @@ io.sockets.on("connection", function (socket) {
             }
         }
         io.sockets.in(socket.room).emit("update-room-status", room);
-        console.log(room)
+
     });
     socket.on("specialAction", function (actionData) {
         var user = people[uid];
