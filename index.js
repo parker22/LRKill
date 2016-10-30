@@ -471,7 +471,7 @@ io.sockets.on("connection", function (socket) {
             }
             else if (!_.has(rooms, id)) {
                 socket.emit("update", "房间已过期或号码有误，请重试");
-            }
+            } 
             else if (_.size(room.characters) <= room.people.length) {
                 socket.emit("update", "房间已满");
             }

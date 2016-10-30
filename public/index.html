@@ -179,14 +179,14 @@
                   <div class ="container_num">
                     <a :id="'guardbutton'+key" v-on:click="guard(key)"
                     class="btn guard_button" role="button">
-                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                      <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id = "'guardhint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
                   <div class="caption caption_change">
                     <div class="row center">
                         <!-- <p><span>{{key}}</span>号玩家：<span>{{pos.c_status}}</span></p> -->
-                        <p>{{pos.c_status}}></p>
+                        <p>{{pos.c_status}}</p>
                         <!-- <a :id="'guardbutton'+key" v-on:click="guard(key)"
                         class="btn btn-default guard_button" role="button">守卫</a> -->
                     </div>
@@ -221,7 +221,7 @@
                   <div class ="container_num">
                     <a :id="'wolvesbutton'+key" v-on:click="wolves(key)"
                     class="btn wolves_button" role="button">
-                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                      <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id= "'wolveshint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
@@ -255,7 +255,7 @@
                   <div class ="container_num">
                     <a :id="'predictorbutton'+key" v-on:click="predictorCheck(key)"
                     class="btn predictor_button" role="button">
-                      <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                      <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id="'predictorhint'+key" class="overlay_image" style="display:none;"></div>
                   </div>
@@ -285,7 +285,7 @@
                   <div class ="container_num">
                     <a :id="'witchbutton'+key" v-on:click="witchPoison(key)"
                     class="btn witch_button" role="button">
-                    <img class="center_top img_change" :src="'images/'+pos.c_name+'.png'" style="display: block;">
+                    <img class="center_top img_change" :src="'images/'+key+'.png'" style="display: block;">
                     </a>
                     <div :id="'witchhint'+key" class="overlay_image" style="display: none;"></div>
                   </div>
