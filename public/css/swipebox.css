@@ -133,7 +133,7 @@
 
 @-moz-keyframes rightSpring {
   0% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   50% {
@@ -141,13 +141,13 @@
   }
 
   100% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 
 @-moz-keyframes leftSpring {
   0% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   50% {
@@ -155,13 +155,13 @@
   }
 
   100% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 
 @-webkit-keyframes rightSpring {
   0% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   50% {
@@ -169,13 +169,13 @@
   }
 
   100% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 
 @-webkit-keyframes leftSpring {
   0% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   50% {
@@ -183,7 +183,7 @@
   }
 
   100% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 }
 

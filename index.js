@@ -47,10 +47,10 @@ io.sockets.on("connection", function (socket) {
         people[uid] = {"name": null, "owns": null, "inroom": null, "seatNum": null};
     }
     if (people[uid].inroom != null) {
-        console.log(people[uid])
-        socket.room = 'room' + people[uid].inroom
-        socket.join(socket.room)
-        console.log(socket.room)
+        console.log(people[uid]);
+        socket.room = 'room' + people[uid].inroom;
+        socket.join(socket.room);
+        console.log(socket.room);
         io.to(socket.room).emit("update-room-status", rooms[people[uid].inroom]);
         socket.emit("init-game");
         socket.emit("update-user-status", people[uid]);
@@ -63,7 +63,7 @@ io.sockets.on("connection", function (socket) {
         console.log("user " + name + "joined");
         people[uid].name = name;
         socket.emit("update-user-status", people[uid]);
-        console.log(people[uid])
+        console.log(people[uid]);
 
         // _.find(people, function (key, value) {
         //   if (key.name.toLowerCase() === name.toLowerCase())
@@ -181,7 +181,7 @@ io.sockets.on("connection", function (socket) {
                 chars[i + 1] = {"c_name": characters[i], "c_status": "awaiting", "c_uid": null};
             }
             room.setCharacters(chars);
-            room.step="enter_room"
+            room.step = "enter_room";
             io.to(socket.room).emit("update-room-status", rooms[id]);
             socket.emit("update-user-status", people[uid]);
             socket.emit("sendRoomID", {id: id});
@@ -233,7 +233,7 @@ io.sockets.on("connection", function (socket) {
         io.sockets.in(socket.room).emit("init-game");
     });
     socket.on("confirmIdentity", function (seatNum) {
-        console.log(seatNum)
+        console.log(seatNum);
         var user = people[uid];
         var room = rooms[user.inroom];
         room.characters[seatNum].isIdentityConfirmed = true;
@@ -263,15 +263,15 @@ io.sockets.on("connection", function (socket) {
     socket.on("startFirstNight", function (seatNumber) {
         var user = people[uid];
         var room = rooms[user.inroom];
-        room.dayNo++
+        room.dayNo++;
         room.stepFlow = _.intersection(["guard", "wolf", "predictor", "witch"], _.uniq(_.map(room.characters, function (c, key) {
             return c.c_name
-        }))).slice(0)
+        }))).slice(0);
         console.log(room);
         io.sockets.in(socket.room).emit("update-room-status", room);
         var audios = "night" + "_start";
         io.sockets.in(socket.room).emit("execute-step", {step: "night", audioList: audios});
-        room.step = room.stepFlow[0]
+        room.step = room.stepFlow[0];
         setTimeout(function () {
             io.sockets.in(socket.room).emit("execute-step", {
                 step: room.stepFlow[0],
@@ -283,16 +283,16 @@ io.sockets.on("connection", function (socket) {
     socket.on("action", function (actionData) {
         var user = people[uid];
         var room = rooms[user.inroom];
-        console.log("action", actionData)
+        console.log("action", actionData);
         var goNextStep = false;
         var thisAction = actionData.action;
         if (thisAction == "guard") {
-            room.lastGuard = actionData.detail
-            console.log("lastguard",room.lastGuard)
+            room.lastGuard = actionData.detail;
+            console.log("lastguard", room.lastGuard);
             goNextStep = !goNextStep
         }
         else if (thisAction == "killChoice") {
-            var targetNum = actionData.detail
+            var targetNum = actionData.detail;
             var killerIdx = _.findIndex(room.killChoices, {
                 wolf: parseInt(user.seatNum)
             });
@@ -302,7 +302,7 @@ io.sockets.on("connection", function (socket) {
             room.killChoices.push({wolf: parseInt(user.seatNum), target: parseInt(targetNum)})
 
         } else if (thisAction == "wolf") {
-            room.lastKill = actionData.detail
+            room.lastKill = actionData.detail;
             goNextStep = !goNextStep
         }
         else if (thisAction == "predictor") {
@@ -318,21 +318,21 @@ io.sockets.on("connection", function (socket) {
             goNextStep = !goNextStep
         }
         if (goNextStep) {
-            console.log(room.stepFlow)
-            var thisStepIdx = _.indexOf(room.stepFlow, thisAction)
-            console.log(thisStepIdx)
-            console.log(room.stepFlow[thisStepIdx])
+            console.log(room.stepFlow);
+            var thisStepIdx = _.indexOf(room.stepFlow, thisAction);
+            console.log(thisStepIdx);
+            console.log(room.stepFlow[thisStepIdx]);
             if (thisStepIdx < room.stepFlow.length - 1) {
-                room.step = room.stepFlow[thisStepIdx + 1]
-                var audios = room.stepFlow[thisStepIdx] + "_stop " + room.stepFlow[thisStepIdx + 1] + "_start"
-                console.log(audios)
+                room.step = room.stepFlow[thisStepIdx + 1];
+                var audios = room.stepFlow[thisStepIdx] + "_stop " + room.stepFlow[thisStepIdx + 1] + "_start";
+                console.log(audios);
                 io.sockets.in(socket.room).emit("execute-step", {
                     step: room.stepFlow[thisStepIdx + 1],
                     audioList: audios
                 });
             }
             else {
-                room.deathPool.splice(0, room.deathPool.length)
+                room.deathPool.splice(0, room.deathPool.length);
                 var deathAudio = '';
                 if (room.lastPoison != 0) {
                     room.deathPool.push(room.lastPoison)
@@ -340,139 +340,167 @@ io.sockets.on("connection", function (socket) {
                 if ((room.lastKill == (room.lastSave || room.lastGuard)) && room.lastSave != room.lastGuard && room.deathPool.length == 0 || room.lastKill == 0) {
                     deathAudio = 'pingan'
                 } else {
-                    room.deathPool.push(room.lastKill)
-                    room.deathPool.sort()
+                    room.deathPool.push(room.lastKill);
+                    room.deathPool.sort();
 
                     _.each(room.deathPool, function (death) {
                         deathAudio += (death + " hao ")
-                    })
+                    });
                     deathAudio += "which_isdead"
                 }
-                var audios = room.stepFlow[thisStepIdx] + "_stop " + "tianliang "
+                var audios = room.stepFlow[thisStepIdx] + "_stop " + "tianliang ";
                 if (room.dayNo == 1) {
                     audios += "police_vote"
-                } else audios += "tonight " + deathAudio
-                console.log(audios)
-                io.sockets.in(socket.room).emit("execute-step", {step: "day", audioList: audios});
-            }
-        }
-        io.sockets.in(socket.room).emit("update-room-status", room);
+                    room.firstNightAudio+="tonight " + deathAudio + " ri"
+                } else{
 
-    });
-    socket.on("specialAction", function (actionData) {
-        var user = people[uid];
-        var room = rooms[user.inroom];
-        console.log("specialAction", actionData)
-        var goNextStep = false;
-        var thisAction = actionData.action;
-        var audios = ""
-        if (thisAction == "voteOut") {
-            delete room.characters[actionData.detail]
-            room.outPool.push({
-                userNum:actionData.detail,
-                reason:"vote",
-                note:room.dayNo
-            })
-            io.sockets.in(socket.room).emit("afterVote");
-        }
-        else if (thisAction == "suicide") {
-            delete room.characters[actionData.detail]
-            room.outPool.push({
-                userNum:actionData.detail,
-                reason:"suicide",
-                note:room.dayNo
-            })
-            audios+=(death + " hao" + " suicide")
-            if (room.dayNo==1){
-                audios+="tonight "
-                _.each(room.deathPool, function (death) {
-                    deathAudio += (death + " hao ")
-                })
-                audios += "which_isdead"
-            }
-            io.sockets.in(socket.room).emit("afterSuicide",{
-                audioList: audios
-            });
-        }
-        else if (thisAction == "killChoice") {
-            var targetNum = actionData.detail
-            var killerIdx = _.findIndex(room.killChoices, {
-                wolf: parseInt(user.seatNum)
-            });
-            if (killerIdx != -1) {
-                room.killChoices.splice(killerIdx, 1) 
-            }
-            room.killChoices.push({wolf: parseInt(user.seatNum), target: parseInt(targetNum)})
-
-        } else if (thisAction == "wolf") {
-            room.lastKill = actionData.detail
-            goNextStep = !goNextStep
-        }
-        else if (thisAction == "predictor") {
-            goNextStep = !goNextStep
-        }
-        else if (thisAction == "witchSave") {
-            room.lastSave = room.lastKill
-        }
-        else if (thisAction == "witchPoison") {
-            room.lastPoison = actionData.detail
-        }
-        else if (thisAction == "witch") {
-            goNextStep = !goNextStep
-        }
-        if (goNextStep) {
-            console.log(room.stepFlow)
-            var thisStepIdx = _.indexOf(room.stepFlow, thisAction)
-            console.log(thisStepIdx)
-            console.log(room.stepFlow[thisStepIdx])
-            if (thisStepIdx < room.stepFlow.length - 1) {
-                room.step = room.stepFlow[thisStepIdx + 1]
-                var audios = room.stepFlow[thisStepIdx] + "_stop " + room.stepFlow[thisStepIdx + 1] + "_start"
-                console.log(audios)
-                io.sockets.in(socket.room).emit("execute-step", {
-                    step: room.stepFlow[thisStepIdx + 1],
-                    audioList: audios
-                });
-            }
-            else {
-                room.deathPool.splice(0, room.deathPool.length)
-                var deathAudio = '';
-                if (room.lastPoison != 0) {
-                    room.deathPool.push(room.lastPoison)
+                    audios += "tonight " + deathAudio + " ri";
                 }
-                if ((room.lastKill == (room.lastSave || room.lastGuard)) && room.lastSave != room.lastGuard && room.deathPool.length == 0 || room.lastKill == 0) {
-                    deathAudio = 'pingan'
-                } else {
-                    room.deathPool.push(room.lastKill)
-                    room.deathPool.sort()
-
-                    _.each(room.deathPool, function (death) {
-                        deathAudio += (death + " hao ")
-                    })
-                    deathAudio += "which_isdead"
-                }
-                var audios = room.stepFlow[thisStepIdx] + "_stop " + "tianliang "
-                if (room.dayNo == 1) {
-                    audios += "police_vote"
-                } else audios += "tonight " + deathAudio
-                console.log(audios)
+                console.log(audios);
+                room.step='day';
                 io.sockets.in(socket.room).emit("execute-step", {step: "day", audioList: audios});
             }
         }
         io.sockets.in(socket.room).emit("update-room-status", room);
         console.log(room)
     });
+    var characterDict = {
+        "wolf": "狼人",
+        "villager": "村民",
+        "predictor": "预言家",
+        "witch": "女巫",
+        "huntsman": "猎人",
+        "Idiot": "白痴",
+        "guard": "守卫"
+    };
+    socket.on("specialAction", function (actionData) {
+        var user = people[uid];
+        var room = rooms[user.inroom];
+        console.log("specialAction", actionData);
+        var goNextStep = false;
+        var thisAction = actionData.action;
+        var audios = "";
+        if (thisAction == "endFirstDay") {
+
+            audios+=room.firstNightAudio;
+            console.log(audios)
+            io.sockets.in(socket.room).emit("execute-step", {step: "endFirstDay", audioList: audios});
+            console.log(_.mapObject(room.characters, function(val, key) {
+                return characterDict[val.c_name];
+            }));
+        }
+        else if (thisAction == "voteOut") {
+            delete room.characters[actionData.detail];
+            room.outPool.push({
+                userNum: actionData.detail,
+                reason: "vote",
+                note: room.dayNo
+            });
+            io.sockets.in(socket.room).emit("afterVote");
+            console.log(room.characters)
+
+        }
+        else if (thisAction == "suicide") {
+            delete room.characters[actionData.detail];
+            room.outPool.push({
+                userNum: actionData.detail,
+                reason: "suicide",
+                note: room.dayNo
+            });
+            audios += (death + " hao" + " suicide");
+            if (room.dayNo == 1) {
+                audios += "tonight ";
+                _.each(room.deathPool, function (death) {
+                    deathAudio += (death + " hao ")
+                });
+                audios += "which_isdead"
+            }
+            io.sockets.in(socket.room).emit("afterSuicide", {
+                audioList: audios
+            });
+        }
+        else if (thisAction == "killChoice") {
+            var targetNum = actionData.detail;
+            var killerIdx = _.findIndex(room.killChoices, {
+                wolf: parseInt(user.seatNum)
+            });
+            if (killerIdx != -1) {
+                room.killChoices.splice(killerIdx, 1)
+            }
+            room.killChoices.push({wolf: parseInt(user.seatNum), target: parseInt(targetNum)})
+
+        } else if (thisAction == "wolf") {
+            room.lastKill = actionData.detail;
+            goNextStep = !goNextStep
+        }
+        else if (thisAction == "predictor") {
+            goNextStep = !goNextStep
+        }
+        else if (thisAction == "witchSave") {
+            room.lastSave = room.lastKill
+        }
+        else if (thisAction == "witchPoison") {
+            room.lastPoison = actionData.detail
+        }
+        else if (thisAction == "witch") {
+            goNextStep = !goNextStep
+        }
+        if (goNextStep) {
+            console.log(room.stepFlow);
+            var thisStepIdx = _.indexOf(room.stepFlow, thisAction);
+            console.log(thisStepIdx);
+            console.log(room.stepFlow[thisStepIdx]);
+            if (thisStepIdx < room.stepFlow.length - 1) {
+                room.step = room.stepFlow[thisStepIdx + 1];
+                var audios = room.stepFlow[thisStepIdx] + "_stop " + room.stepFlow[thisStepIdx + 1] + "_start";
+                console.log(audios);
+                io.sockets.in(socket.room).emit("execute-step", {
+                    step: room.stepFlow[thisStepIdx + 1],
+                    audioList: audios
+                });
+            }
+            else {
+                room.deathPool.splice(0, room.deathPool.length);
+                var deathAudio = '';
+                if (room.lastPoison != 0) {
+                    room.deathPool.push(room.lastPoison)
+                }
+                if ((room.lastKill == (room.lastSave || room.lastGuard)) && room.lastSave != room.lastGuard && room.deathPool.length == 0 || room.lastKill == 0) {
+                    deathAudio = 'pingan'
+                } else {
+                    room.deathPool.push(room.lastKill);
+                    room.deathPool.sort();
+
+                    _.each(room.deathPool, function (death) {
+                        deathAudio += (death + " hao ")
+                    });
+                    deathAudio += "which_isdead"
+                }
+                var audios = room.stepFlow[thisStepIdx] + "_stop " + "tianliang ";
+                if (room.dayNo == 1) {
+                    audios += "police_vote"
+                } else audios += "tonight " + deathAudio;
+                console.log(audios);
+                io.sockets.in(socket.room).emit("execute-step", {step: "day", audioList: audios});
+            }
+        }
+        io.sockets.in(socket.room).emit("update-room-status", room);
+    });
 
     socket.on("joinRoom", function (id) {
         if (typeof people[uid] !== "undefined") {
             var room = rooms[id];
+            if (room == null) {
+                socket.emit("update", "Room not exist");
+                return
+            }
             console.log(room);
             if (uid === room.owner) {
                 socket.emit("update", "You are the owner of this room and you have already been joined.");
             }
             else if (!_.has(rooms, id)) {
                 socket.emit("update", "房间已过期或号码有误，请重试");
-            } 
+            }
             else if (_.size(room.characters) <= room.people.length) {
                 socket.emit("update", "房间已满");
             }

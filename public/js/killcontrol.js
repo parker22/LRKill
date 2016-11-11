@@ -16,12 +16,12 @@ $(document).ready(function () {
     $(".footer").hide();
     // $("#first_view").hide();
 
-    var viewModels = ["witch","night","predictor","identify","wolf","guard","enter_room","game-plaza-view"]
+    var viewModels = ["witch","night","predictor","identify","wolf","guard","enter_room","game-plaza-view"];
     function playAudios(audioList) {
         var index = 1;
         var strings = audioList.split(" ");
 
-        var audio = new Audio("sounds/" + strings[0] + ".mp3")
+        var audio = new Audio("sounds/" + strings[0] + ".mp3");
         audio.play();
 
         audio.onended = function () {
@@ -29,7 +29,7 @@ $(document).ready(function () {
                 audio.src = "sounds/" + strings[index] + ".mp3";
                 setTimeout(function () {
                     audio.play();
-                },50)
+                },50);
                 index++;
             }
         };
@@ -79,7 +79,7 @@ $(document).ready(function () {
                 "limit_num": true
             },
             {
-                "c_name": "idiot",
+                "c_name": "Idiot",
                 "c_num": 0,
                 "limit_num": true
             },
@@ -102,12 +102,12 @@ $(document).ready(function () {
         $("#"+view).show()
     };
 
-    var viewController =  new ViewController(viewModels)
+    var viewController =  new ViewController(viewModels);
 
     var userInfoVm = new Vue({
         el: '#user-info-panel',
         data: player_info
-    })
+    });
 
     var man_kill = new Vue({
         el: '#panda_kill',
@@ -228,13 +228,20 @@ $(document).ready(function () {
             $("#first_view").hide();
             if (status.inroom != null) {
                 if(kill_process!=null){
-                    console.log("现在是"+ kill_process.room.step)
-                    viewController.onlyShow(kill_process.room.step)
-                }else $("#enter_room").show();
+                    console.log("现在是"+ kill_process.room.step);
+                    if (kill_process.room.step=='day'){
+                        $("#room-info-panel").show();
+                    }
+                    else {viewController.onlyShow(kill_process.room.step)}
+                }else {
+                    $("#enter_room").show();
+                }
+
             } else {
                 $("#game-plaza-view").show();
 
             }
+            $("#user-info-panel").show();
         }
         console.log(userInfoVm.$data);
 
@@ -252,7 +259,7 @@ $(document).ready(function () {
     </li>\
   ',
         props: ['player']
-    })
+    });
     socket.on("update-room-status", function (room) {
 
         if (_.isEmpty(roomInfo)) {
@@ -268,13 +275,12 @@ $(document).ready(function () {
                 },
                 methods: {
                     sit: function (seatNum) {
-                        console.log(this.isOwner)
+                        console.log(this.isOwner);
                         socket.emit("sit", seatNum);
                         console.log("sit" + seatNum)
                     },
                     startGame: function () {
-                        $("#enter_room").hide();
-                        $("body").css({'background-image':'url(../images/Fourthpage.png)'});
+                        // $("body").css({'background-image':'url(../images/Fourthpage.png)'});
                         // $("#identify").show();
                         socket.emit("startGame");
                     },
@@ -282,6 +288,9 @@ $(document).ready(function () {
                         $("#enter_room").hide();
                         $("body").css({'background-image':'url(../images/Fourthpage.png)'});
                         $("#identify").show();
+                        // $("#card").flip({
+                        //     trigger: 'manual'
+                        // });
                         kill_process = new Vue({
                             el: '#panda_process',
                             data: {
@@ -292,6 +301,10 @@ $(document).ready(function () {
 
                             },
                             methods: {
+                                //翻牌
+                                // flipIdentity:function () {
+                                //     $("#card").flip('toggle')
+                                // },
                                 //确认身份
                                 confirmIdentity: function () {
                                     socket.emit("confirmIdentity", userInfoVm.seatNum);
@@ -302,6 +315,13 @@ $(document).ready(function () {
                                     socket.emit("startFirstNight");
 
                                 },
+                                restartGame:function () {
+                                    socket.emit("startGame");
+                                },
+                                wolfSuicide:function () {
+                                    console.log("endFirstDay");
+                                    socket.emit("specialAction", {action: "endFirstDay", detail:null});
+                                },
                                 // refreshPlayers: function () {
                                 //     // _.each(this.room["confirmedPlayers"],function (player) {
                                 //     //     this.confirmedPlayers.push(player)
@@ -311,7 +331,7 @@ $(document).ready(function () {
                                 // }
                                 // //守卫的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 guard: function (index) {
-                                    console.log("想守卫" + index)
+                                    console.log("想守卫" + index);
                                     //socket.emit("action", {action: "guard", detail: parseInt(index)});
                                     $(".overlay_image").hide();
                                     $("#guardhint" + index).show();
@@ -329,7 +349,7 @@ $(document).ready(function () {
                                     }
                                 },
                                 guardConfirm: function () {
-                                  console.log("确定守卫" + this.guardObj)
+                                  console.log("确定守卫" + this.guardObj);
                                   socket.emit("action", {action: "guard", detail: this.guardObj});
                                   setTimeout(function () {
                                       $("#guard").hide();
@@ -337,14 +357,14 @@ $(document).ready(function () {
                                 },
                                 // //狼人的方法和逻辑，点一个按钮后 其他按钮变灰色 重置功能
                                 wolves: function (index) {
-                                    console.log("想杀害" + index)
+                                    console.log("想杀害" + index);
                                     // $(".wolves_button").addClass("disabled");
                                     $(".overlay_image").hide();
                                     $("#wolveshint" + index).show();
                                     socket.emit("action", {action: "killChoice", detail: index});
                                 },
                                 wolvesDecision: function () {
-                                    console.log("决定杀害" + this.killDecision)
+                                    console.log("决定杀害" + this.killDecision);
                                     socket.emit("action", {action: "wolf", detail: this.killDecision});
                                 },
                                 wolves_restart: function () {
@@ -452,7 +472,7 @@ $(document).ready(function () {
                                             return _.zipObject(["target", "wolves"], currentItem);
                                         })
                                         .value();
-                                    console.log(result)
+                                    console.log(result);
                                     return result
                                 },
                                 killDecision: function () {
@@ -472,11 +492,11 @@ $(document).ready(function () {
                 player_status.initGame()
             });
             socket.on("execute-step", function (stepData) {
-                console.log("execute-step-data", stepData)
+                console.log("execute-step-data", stepData);
                 var step = stepData.step;
                 var strings = stepData["audioList"].split(" ");
                 var index = 1;
-                var audio = new Audio("sounds/" + strings[0] + ".mp3")
+                var audio = new Audio("sounds/" + strings[0] + ".mp3");
                 audio.play();
 
                 audio.onended = function () {
@@ -484,60 +504,64 @@ $(document).ready(function () {
                         audio.src = "sounds/" + strings[index] + ".mp3";
                         setTimeout(function () {
                             audio.play();
-                        }, 1)
+                        }, 1);
                         index++;
                     }
                 };
 
 
                 //这个地方需要修改，就是一个个人身份的判断，判断是不是守卫，是守卫的话，跳转守卫界面，不是的话就一直黑天
-                $("#night").show()
-                $('#wolf').hide()
-                $('#guard').hide()
-                $('#predictor').hide()
-                $('#witch').hide()
+                $("#night").show();
+                $('#wolf').hide();
+                $('#guard').hide();
+                $('#predictor').hide();
+                $('#witch').hide();
                 if (step == "night") {
-                    console.log("天黑了")
+                    console.log("天黑了");
                     $("#room-info-panel").hide();
                     $('#confirmedPlayers').hide();
                     $("#night").show();
                 }
                 else if (step == "guard") {
-                    console.log("守卫请睁眼")
+                    console.log("守卫请睁眼");
                     if (kill_process.c_name == step) {
-                        console.log("我是守卫")
+                        console.log("我是守卫");
                         setTimeout("$('#night').hide()", 500);
                         setTimeout("$('#guard').show()", 1000);
                     }
                 }
                 else if (step == "wolf") {
-                    console.log("狼人请睁眼")
+                    console.log("狼人请睁眼");
                     if (kill_process.c_name == step) {
-                        console.log("我是狼人")
+                        console.log("我是狼人");
                         setTimeout("$('#night').hide()", 500);
                         setTimeout("$('#wolf').show()", 1000);
                     }
                 }
                 else if (step == "predictor") {
-                    console.log("预言家请睁眼")
+                    console.log("预言家请睁眼");
                     if (kill_process.c_name == step) {
-                        console.log("我是预言家")
+                        console.log("我是预言家");
                         setTimeout("$('#night').hide()", 500);
                         setTimeout("$('#predictor').show()", 1000);
                     }
                 }
                 else if (step == "witch") {
-                    console.log("女巫请睁眼")
+                    console.log("女巫请睁眼");
                     if (kill_process.c_name == step) {
-                        console.log("我是女巫")
+                        console.log("我是女巫");
                         setTimeout("$('#night').hide()", 500);
                         setTimeout("$('#witch').show()", 1000);
                     }
                 }
                 else if (step == "day") {
-                    console.log("天亮了")
+                    console.log("天亮了");
                     $("#room-info-panel").show();
                     setTimeout("$('#night').hide()", 500);
+
+                }
+                else if (step == "endFirstDay") {
+                    console.log("有人死了");
 
                 }
 

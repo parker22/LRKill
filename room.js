@@ -15,9 +15,10 @@ function Room(name, id, owner) {
   this.lastSave = 0;
   this.killChoices = [];
   this.stepFlow=[];
-  this.deathPool = []
-  this.outPool=[]
+  this.deathPool = [];
+  this.outPool=[];
   this.characters = {};
+  this.firstNightAudio= "";
 };
 
 Room.prototype.addPerson = function(personID) {
